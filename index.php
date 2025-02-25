@@ -1,6 +1,12 @@
 <?php
 require_once 'connect.php';
+$searchTerm = '';
+$searchQuery = '';
 
+if (isset($_GET['search'])) {
+    $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
+    $searchQuery = "AND breedName LIKE '%$searchTerm%'"; // Modify the query based on the search term
+}
 // Fetch dog sizes and store in an array for reuse
 $sizeQuery = "SELECT * FROM dogsize";
 $sizeResult = mysqli_query($conn, $sizeQuery);
@@ -43,6 +49,27 @@ if (isset($_POST['delete'])) {
       echo "Error deleting record: " . mysqli_error($conn);
   }
 }
+//updatebreed 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
+  $breedID = mysqli_real_escape_string($conn, $_POST['breedID']);
+  $breedName = mysqli_real_escape_string($conn, $_POST['breedName']);
+  $description = mysqli_real_escape_string($conn, $_POST['description']);
+  $shortDescription = mysqli_real_escape_string($conn, $_POST['shortDescription']);
+  $sizeID = mysqli_real_escape_string($conn, $_POST['sizeID']);
+
+ 
+  $updateQuery = "UPDATE dogBreeds SET breedName='$breedName', description='$description', shortDescription='$shortDescription', sizeID='$sizeID' WHERE breedID=$breedID";
+
+  if (mysqli_query($conn, $updateQuery)) {
+      // Redirect to avoid duplicate submissions
+      header("Location: index.php?updated=true");
+      exit(); // Ensure script stops execution after redirect
+  } else {
+      echo "Error: " . $updateQuery . "<br>" . mysqli_error($conn);
+  }
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -105,6 +132,10 @@ if (isset($_POST['delete'])) {
   <section id="doggos" class="py-2 mt-2">
     <div class="container mt-5">
       <h1 class="text-center pt-5" style="font-size:50px; color: #0078D0;">Dog Sizes</h1>
+      <form action="index.php#doggos" method="GET" class="form-inline my-3 justify-content-center">
+  <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search for breeds" aria-label="Search">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
       <?php foreach ($sizes as $size) { ?>
       <div class="container">
         <div class="row my-5">
@@ -114,52 +145,75 @@ if (isset($_POST['delete'])) {
         </div>
         <div class="row" id="dogs">
           <?php
-          $dogQuery = "SELECT breedID, breedName, description, image, backgroundColor, shortDescription FROM dogBreeds WHERE sizeID = {$size['sizeID']} LIMIT 6";
+          $dogQuery = "SELECT breedID, breedName, description, image, backgroundColor, shortDescription 
+             FROM dogBreeds 
+             WHERE sizeID = {$size['sizeID']} $searchQuery 
+             LIMIT 6";  
+
           $dogResult = mysqli_query($conn, $dogQuery);
 
           while ($dog = mysqli_fetch_assoc($dogResult)) {
           ?>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-            <div class="card border-green" style="background-color: <?php echo $dog['backgroundColor']; ?>;">
-              <img class="card-img" src="<?php echo $dog['image']; ?>" alt="<?php echo $dog['breedName']; ?>">
-              <div class="card-body" style="background-color: #0078D0; border-radius: 25px;">
-                <h3 class="card-title pb-2"><?php echo $dog['breedName']; ?></h3>
-                <p class="desc pb-3"><?php echo $dog['description']; ?></p>
-                <div class="d-flex justify-content-between">                  
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dogModal<?php echo $dog['breedID']; ?>">
-                  View More
+         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+    <div class="card border-green" style="background-color: <?php echo $dog['backgroundColor']; ?>;">
+        <img class="card-img" src="<?php echo $dog['image']; ?>" alt="<?php echo $dog['breedName']; ?>">
+        <div class="card-body" style="background-color: #0078D0; border-radius: 25px;">
+            <h3 class="card-title pb-2"><?php echo $dog['breedName']; ?></h3>
+            <p class="desc pb-3"><?php echo $dog['description']; ?></p>
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal<?php echo $dog['breedID']; ?>">
+                    Edit
                 </button>
                 <form action="index.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this breed?');">
-                  <input type="hidden" name="breedID" value="<?php echo $dog['breedID']; ?>">
-                  <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+                    <input type="hidden" name="breedID" value="<?php echo $dog['breedID']; ?>">
+                    <button type="submit" name="delete" class="btn btn-danger">Delete</button>
                 </form>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
+    </div>
+</div>
 
-          <!-- Modal -->
-          <div class="modal fade" id="dogModal<?php echo $dog['breedID']; ?>" tabindex="-1" aria-labelledby="dogModalLabel<?php echo $dog['breedID']; ?>" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="dogModalLabel<?php echo $dog['breedID']; ?>"><?php echo $dog['breedName']; ?></h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal<?php echo $dog['breedID']; ?>" tabindex="-1" aria-labelledby="updateModalLabel<?php echo $dog['breedID']; ?>" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel<?php echo $dog['breedID']; ?>">Edit Breed: <?php echo $dog['breedName']; ?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <img class="img-fluid" src="<?php echo $dog['image']; ?>" alt="<?php echo $dog['breedName']; ?>">
-                  <div class="modal-body">
-                    <p><strong>Quick Info:</strong> <?php echo $dog['shortDescription']; ?></p>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-              </div>
+                </button>
             </div>
-          </div>
+            <div class="modal-body">
+                <form action="index.php" method="POST">
+                    <input type="hidden" name="breedID" value="<?php echo $dog['breedID']; ?>">
+                    <div class="form-group">
+                        <label for="breedName">Breed Name</label>
+                        <input type="text" class="form-control" name="breedName" value="<?php echo $dog['breedName']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" name="description" rows="3" required><?php echo $dog['description']; ?></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="shortDescription">Short Description</label>
+                        <input type="text" class="form-control" name="shortDescription" value="<?php echo $dog['shortDescription']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sizeID">Size</label>
+                        <select class="form-control" name="sizeID" required>
+                            <?php foreach ($sizes as $size) { ?>
+                            <option value="<?php echo $size['sizeID']; ?>" <?php if ($dog['sizeID'] == $size['sizeID']) echo 'selected'; ?>>
+                                <?php echo $size['sizeName']; ?>
+                            </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <button type="submit" name="update" class="btn btn-success">Update Breed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
           <?php } ?>
         </div>
       </div>
