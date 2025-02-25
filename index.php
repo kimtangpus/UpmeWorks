@@ -1,9 +1,50 @@
 <?php
 require_once 'connect.php';
 
-$sizeQuery = "SELECT * FROM dogSize";
+// Fetch dog sizes and store in an array for reuse
+$sizeQuery = "SELECT * FROM dogsize";
 $sizeResult = mysqli_query($conn, $sizeQuery);
+$sizes = [];
+
+while ($size = mysqli_fetch_assoc($sizeResult)) {
+    $sizes[] = $size;  // Store each size in the array
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  // Get form data
+  $breedName = mysqli_real_escape_string($conn, $_POST['breedName']);
+  $description = mysqli_real_escape_string($conn, $_POST['description']);
+  $shortDescription = mysqli_real_escape_string($conn, $_POST['shortDescription']);
+  $sizeID = mysqli_real_escape_string($conn, $_POST['sizeID']);
+
+  // Insert the new dog breed into the database (no image or background color)
+  $query = "INSERT INTO dogBreeds (breedName, description, shortDescription, sizeID) 
+            VALUES ('$breedName', '$description', '$shortDescription', '$sizeID')";
+
+  if (mysqli_query($conn, $query)) {
+      // Redirect back to the contact page with success message
+      header("Location: index.php?success=true");
+  } else {
+      echo "Error: " . $query . "<br>" . mysqli_error($conn);
+  }
+}
+//delete breed
+if (isset($_POST['delete'])) {
+  $breedID = mysqli_real_escape_string($conn, $_POST['breedID']);
+  
+  // SQL query to delete the breed based on the breedID
+  $deleteQuery = "DELETE FROM dogBreeds WHERE breedID = $breedID";
+
+  if (mysqli_query($conn, $deleteQuery)) {
+      // Redirect to the same page with a success flag
+      header("Location: index.php?deleted=true");
+  } else {
+      // Handle the error
+      echo "Error deleting record: " . mysqli_error($conn);
+  }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,15 +102,10 @@ $sizeResult = mysqli_query($conn, $sizeQuery);
     </div>
   </section>
 
-
-
-
   <section id="doggos" class="py-2 mt-2">
     <div class="container mt-5">
-      <div class="container">
-        <h1 class="text-center pt-5" style="font-size:50px; color: #0078D0;">Dog Sizes</h1>
-      </div>
-      <?php while ($size = mysqli_fetch_assoc($sizeResult)) { ?>
+      <h1 class="text-center pt-5" style="font-size:50px; color: #0078D0;">Dog Sizes</h1>
+      <?php foreach ($sizes as $size) { ?>
       <div class="container">
         <div class="row my-5">
           <h2 class="display-3 text-center w-100" style="font-size: 35px; color: #F0282D;">
@@ -78,7 +114,7 @@ $sizeResult = mysqli_query($conn, $sizeQuery);
         </div>
         <div class="row" id="dogs">
           <?php
-          $dogQuery = "SELECT breedName, description, image, backgroundColor, shortDescription FROM dogBreeds WHERE sizeID = {$size['sizeID']} LIMIT 4";
+          $dogQuery = "SELECT breedID, breedName, description, image, backgroundColor, shortDescription FROM dogBreeds WHERE sizeID = {$size['sizeID']} LIMIT 6";
           $dogResult = mysqli_query($conn, $dogQuery);
 
           while ($dog = mysqli_fetch_assoc($dogResult)) {
@@ -86,29 +122,28 @@ $sizeResult = mysqli_query($conn, $sizeQuery);
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card border-green" style="background-color: <?php echo $dog['backgroundColor']; ?>;">
               <img class="card-img" src="<?php echo $dog['image']; ?>" alt="<?php echo $dog['breedName']; ?>">
-              <div class="card-body">
-                <h3 class="card-title pb-2">
-                  <?php echo $dog['breedName']; ?>
-                </h3>
-                <p class="desc pb-3">
-                  <?php echo $dog['description']; ?>
-                </p>
-                <button type="button" class="btn btn-primary" data-toggle="modal"
-                  data-target="#dogModal<?php echo str_replace(' ', '', $dog['breedName']); ?>">
+              <div class="card-body" style="background-color: #0078D0; border-radius: 25px;">
+                <h3 class="card-title pb-2"><?php echo $dog['breedName']; ?></h3>
+                <p class="desc pb-3"><?php echo $dog['description']; ?></p>
+                <div class="d-flex justify-content-between">                  
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dogModal<?php echo $dog['breedID']; ?>">
                   View More
                 </button>
+                <form action="index.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this breed?');">
+                  <input type="hidden" name="breedID" value="<?php echo $dog['breedID']; ?>">
+                  <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+                </form>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="modal fade" id="dogModal<?php echo str_replace(' ', '', $dog['breedName']); ?>" tabindex="-1"
-            aria-labelledby="dogModalLabel<?php echo str_replace(' ', '', $dog['breedName']); ?>" aria-hidden="true">
+          <!-- Modal -->
+          <div class="modal fade" id="dogModal<?php echo $dog['breedID']; ?>" tabindex="-1" aria-labelledby="dogModalLabel<?php echo $dog['breedID']; ?>" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="dogModalLabel<?php echo str_replace(' ', '', $dog['breedName']); ?>">
-                    <?php echo $dog['breedName']; ?>
-                  </h5>
+                  <h5 class="modal-title" id="dogModalLabel<?php echo $dog['breedID']; ?>"><?php echo $dog['breedName']; ?></h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -116,11 +151,7 @@ $sizeResult = mysqli_query($conn, $sizeQuery);
                 <div class="modal-body">
                   <img class="img-fluid" src="<?php echo $dog['image']; ?>" alt="<?php echo $dog['breedName']; ?>">
                   <div class="modal-body">
-
-
-                    <p><strong>Quick Info:</strong>
-                      <?php echo $dog['shortDescription']; ?>
-                    </p>
+                    <p><strong>Quick Info:</strong> <?php echo $dog['shortDescription']; ?></p>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -137,40 +168,42 @@ $sizeResult = mysqli_query($conn, $sizeQuery);
   </section>
 
   <section id="contact" class="py-2 mt-2">
-    <div class="container">
-      <h1 class="display-3 p-5" style="font-size: 50px; text-align: center; color: #0078D0;">
-        <strong>Contact Woofopedia</strong>
-      </h1>
+    <div class="container my-5">
       <div class="row">
-        <div class="col-md-6 mb-3">
-          <h5 style="color: #F0282D;"><strong>Get in Touch</strong></h5>
-          <p>
-            Thank you for visiting Woofopedia! If you have any questions about dog breeds, need assistance with dog care
-            information, or want to collaborate on a project, feel free to reach out. We'd love to hear from you and are
-            always excited to help with anything dog-related!
-          </p>
-          <p style="color: #00A651;"><strong>Email:</strong> woofopedia@gmail.com</p>
-          <p style="color: #00A651;"><strong>Phone:</strong> +63 915 491 1117</p>
-          <p style="color: #00A651;"><strong>Address:</strong> Tanauan City, Batangas</p>
-        </div>
-        <div class="col-md-6">
-          <form>
-            <div class="m-3">
-              <label for="name" class="form-label" style="color: #000000;">Name</label>
-              <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+        <div class="col-lg-8 offset-lg-2">
+          <div class="card">
+            <div class=" pt-4 card-header">
+              <h5 class="card-title" style="color: #0078D0;">Add a Dog Breed</h5>
             </div>
-            <div class="m-3">
-              <label for="email" class="form-label" style="color: #000000;">Email</label>
-              <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            <div class="card-body">
+              <form action="index.php" method="POST">
+                <div class="form-group">
+                  <label for="breedName">Breed Name</label>
+                  <input type="text" class="form-control" id="breedName" name="breedName" placeholder="Enter breed name" required>
+                </div>
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="shortDescription">Short Description</label>
+                  <input type="text" class="form-control" id="shortDescription" name="shortDescription" placeholder="Enter short description" required>
+                </div>
+                <div class="form-group">
+                  <label for="sizeID">Size</label>
+                  <select class="form-control" id="sizeID" name="sizeID" required>
+                    <?php
+                    // Loop through the stored sizes array to populate the dropdown
+                    foreach ($sizes as $size) {
+                      echo "<option value='{$size['sizeID']}'>{$size['sizeName']}</option>";
+                    }
+                    ?>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
             </div>
-            <div class="m-3">
-              <label for="message" class="form-label" style="color: #000000;">Message</label>
-              <textarea class="form-control" id="message" rows="5" placeholder="Your message" required></textarea>
-            </div>
-            <div class="m-3">
-              <button type="submit" class="btn">Send Message</button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -377,5 +410,4 @@ $sizeResult = mysqli_query($conn, $sizeQuery);
     }
   </style>
 </body>
-
 </html>
