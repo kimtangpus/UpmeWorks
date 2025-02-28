@@ -9,7 +9,7 @@ let dogs = ref([]);
 let searchQuery = ref('');
 
 onMounted(async () => {
-  await getDogs(); // Fetch dogs data from Laravel API (you can use this for future enhancements)
+  await getDogs(); 
 });
 
 watch(searchQuery, () => {
@@ -17,11 +17,11 @@ watch(searchQuery, () => {
 }); 
 
 const newDog = () => {
-  router.push('/dogs/create'); // Redirect to a create dog form in Laravel
+  router.push('/dogs/create'); 
 };
 
 const ourImage = (image) => {
-  return "/upload/" + image; // Image path for dog breeds
+  return "/upload/" + image; 
 };
 
 const getDogs = async () => {
@@ -73,12 +73,11 @@ const dogDelete = async (id) => {
     </div>
   </section>
 
-  <!-- Section: Dog Sizes (Cards with Edit and Delete buttons) -->
+  
   <section id="doggos" class="py-5">
     <div class="container">
-      <h1 class="text-center mb-5" style="font-size: 45px; color: #0078D0;">Dog Sizes</h1>
+      <h1 class="text-center mb-5" style="font-size: 45px; color: #0078D0;">Dog Breeds</h1>
 
-      <!-- Search Bar -->
       <form @submit.prevent="searchBreeds" class="d-flex justify-content-center mb-5">
         <input
           v-model="searchQuery"
@@ -94,7 +93,7 @@ const dogDelete = async (id) => {
         </button>
       </form>
 
-      <!-- Cards Displaying Dog Breeds with Edit and Delete buttons -->
+     
       <div class="row justify-content-center">
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="dog in dogs" :key="dog.id">
           <div class="card shadow-lg border-0 h-100" style="background-color: #f8f9fa;">
@@ -102,8 +101,8 @@ const dogDelete = async (id) => {
             <div class="card-body text-center rounded-bottom p-4" style="background-color: #0078D0; color: #fff;">
               <h3 class="card-title mb-3">{{ dog.breedName }}</h3>
               <p class="desc mb-4">{{ dog.description }}</p>
+              <p class="desc mb-4">{{ dog.breedSize }}</p>
 
-              <!-- Edit and Delete buttons -->
               <button class="btn btn-warning rounded-pill me-2" @click="onEdit(dog.id)">
                 Edit
               </button>

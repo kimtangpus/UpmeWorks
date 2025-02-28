@@ -122,9 +122,9 @@ const updateDog = (values, actions) => {
           required
         >
           <option value="">Select size category</option>
-          <option value="Small Breeds">Small Breeds</option>
-          <option value="Medium Breeds">Medium Breeds</option>
-          <option value="Large Breeds">Large Breeds</option>
+          <option value="Small Breed">Small Breed</option>
+          <option value="Medium Breed">Medium Breed</option>
+          <option value="Large Breed">Large Breed</option>
         </select>
       </div>
 
