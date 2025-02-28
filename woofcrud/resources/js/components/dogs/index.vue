@@ -54,8 +54,8 @@ const dogDelete = async (id) => {
   </div>
 
   <!-- Section: Home -->
-  <section class="home py-5" id="home" style="background-color: #f8f9fa;">
-    <div class="container">
+  <section class="home p-5 m-10" id="home" style="background-color: #f8f9fa;">
+    <div class="container p-5">
       <div class="row align-items-center justify-content-center text-center px-5">
         <div class="col-md-6 pb-5">
           <h1 class="display-4 fw-bold mb-4">
@@ -74,7 +74,7 @@ const dogDelete = async (id) => {
   </section>
 
   
-  <section id="doggos" class="py-5">
+  <section id="doggos" class="p-5 m-10">
     <div class="container">
       <h1 class="text-center mb-5" style="font-size: 45px; color: #0078D0;">Dog Breeds</h1>
 
@@ -94,25 +94,31 @@ const dogDelete = async (id) => {
       </form>
 
      
-      <div class="row justify-content-center">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="dog in dogs" :key="dog.id">
-          <div class="card shadow-lg border-0 h-100" style="background-color: #f8f9fa;">
-            <img class="card-img-top rounded-top" :src="ourImage(dog.image)" alt="Dog" />
-            <div class="card-body text-center rounded-bottom p-4" style="background-color: #0078D0; color: #fff;">
-              <h3 class="card-title mb-3">{{ dog.breedName }}</h3>
-              <p class="desc mb-4">{{ dog.description }}</p>
-              <p class="desc mb-4">{{ dog.breedSize }}</p>
-
-              <button class="btn btn-warning rounded-pill me-2" @click="onEdit(dog.id)">
-                Edit
-              </button>
-              <button class="btn btn-danger rounded-pill" @click="dogDelete(dog.id)">
-                Delete
-              </button>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="d-flex flex-row flex-wrap justify-content-center">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="dog in dogs" :key="dog.id">
+              <div class="card shadow-lg border-0 h-100" style="background-color: #f8f9fa;">
+                <img class="card-img-top rounded-top img-fluid" :src="ourImage(dog.image)" alt="Dog" />
+                <div class="card-body text-center rounded-bottom p-4" style="background-color: #0078D0; color: #fff;">
+                  <h3 class="card-title mb-3">{{ dog.breedName }}</h3>
+                  <p class="desc mb-4">{{ dog.description }}</p>
+                  <p class="desc mb-4">{{ dog.breedSize }}</p>
+                  <button class="btn btn-warning rounded-pill me-2" @click="onEdit(dog.id)">
+                    Edit
+                  </button>
+                  <button class="btn btn-danger rounded-pill" @click="dogDelete(dog.id)">
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+
+
     </div>
   </section>
 </template>
