@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import dogCreate from '../components/DogCreate.vue'
-import dogIndex from '../components/DogIndex.vue'
+import dogIndex from '../components/dogs/Index.vue'
+import dogForm from '../components/dogs/Form.vue'
+
 import notFound from '../components/NotFound.vue'
 
 const routes = [
@@ -13,9 +14,13 @@ const routes = [
     {
         path: '/dogs/create',
         name: 'dogs.create',
-        component: dogIndex
+        component: dogForm
     },
-
+    {
+        path: '/dogs/:id/edit',
+        name: 'dogs.edit',
+        component: dogForm
+    },
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',

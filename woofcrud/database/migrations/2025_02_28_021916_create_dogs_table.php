@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('breedName')->nullable();
             $table->string('breedSize')->nullable();
+            $table->text('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

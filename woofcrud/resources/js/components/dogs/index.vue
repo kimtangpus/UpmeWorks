@@ -1,11 +1,51 @@
 <script setup>
-  import { useRouter } from 'vue-router';
+import { ref, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
-  const router = useRouter();
+const router = useRouter();
+let dogs = ref([]);
 
-  const newDog = () => {
-    router.push('/dogs/create');
-  };
+let searchQuery = ref('');
+
+onMounted(async () => {
+  await getDogs(); // Fetch dogs data from Laravel API (you can use this for future enhancements)
+});
+
+watch(searchQuery, () => {
+  getDogs(); 
+}); 
+
+const newDog = () => {
+  router.push('/dogs/create'); // Redirect to a create dog form in Laravel
+};
+
+const ourImage = (image) => {
+  return "/upload/" + image; // Image path for dog breeds
+};
+
+const getDogs = async () => {
+  try {
+    let response = await axios.get('/api/dogs?&searchQuery='+searchQuery.value);
+    dogs.value = response.data.dogs;
+  } catch (error) {
+    console.error('Error fetching dogs:', error);
+  }
+};
+const onEdit = (id) => {
+  router.push(`/dogs/${id}/edit`); 
+};
+const dogDelete = async (id) => {
+  if (confirm('Are you sure you want to delete this dog?')) {
+    try {
+      await axios.delete(`/api/dogs/${id}`);     
+      await getDogs();
+    } catch (error) {
+      console.error('Error deleting dog:', error);
+    }
+  }
+};
+
 </script>
 
 <template>
@@ -33,7 +73,7 @@
     </div>
   </section>
 
-  <!-- Section: Dog Sizes -->
+  <!-- Section: Dog Sizes (Cards with Edit and Delete buttons) -->
   <section id="doggos" class="py-5">
     <div class="container">
       <h1 class="text-center mb-5" style="font-size: 45px; color: #0078D0;">Dog Sizes</h1>
@@ -54,171 +94,28 @@
         </button>
       </form>
 
-      <!-- Displaying Dog Breeds -->
-      <div v-for="size in filteredSizes" :key="size.sizeID" class="mb-5">
-  <h2 v-if="size.dogs.length" class="text-center mt-5 mb-4" style="font-size: 35px; color: #F0282D;">{{ size.sizeName }}</h2>
+      <!-- Cards Displaying Dog Breeds with Edit and Delete buttons -->
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="dog in dogs" :key="dog.id">
+          <div class="card shadow-lg border-0 h-100" style="background-color: #f8f9fa;">
+            <img class="card-img-top rounded-top" :src="ourImage(dog.image)" alt="Dog" />
+            <div class="card-body text-center rounded-bottom p-4" style="background-color: #0078D0; color: #fff;">
+              <h3 class="card-title mb-3">{{ dog.breedName }}</h3>
+              <p class="desc mb-4">{{ dog.description }}</p>
 
-  <!-- Row to align the cards horizontally -->
-  <div class="row justify-content-center">
-    <div v-for="dog in size.dogs" :key="dog.breedID" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-      <div class="card shadow-lg border-0 h-100" :style="{ backgroundColor: dog.backgroundColor }">
-        <img class="card-img-top rounded-top" :src="dog.imgSrc" :alt="dog.breedName" />
-        <div class="card-body text-center rounded-bottom p-4" style="background-color: #0078D0; color: #fff;">
-          <h3 class="card-title mb-3">{{ dog.breedName }}</h3>
-          <p class="desc mb-4">{{ dog.description }}</p>
-          <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-light text-dark btn-sm rounded-pill px-4" @click="editBreed(dog)">Edit</button>
-            <button type="button" class="btn btn-danger btn-sm rounded-pill px-4" @click="deleteBreed(dog.breedID)">Delete</button>
+              <!-- Edit and Delete buttons -->
+              <button class="btn btn-warning rounded-pill me-2" @click="onEdit(dog.id)">
+                Edit
+              </button>
+              <button class="btn btn-danger rounded-pill" @click="dogDelete(dog.id)">
+                Delete
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-      <!-- Message when no results are found -->
-      <div v-if="filteredSizes.every(size => size.dogs.length === 0)" class="text-center">
-        <h4>No breeds match your search criteria.</h4>
       </div>
     </div>
   </section>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: '',
-      sizes: [
-        {
-          sizeID: 1,
-          sizeName: 'Small Breeds',
-          dogs: [
-            {
-              breedID: 1,
-              breedName: 'Shih Tzu',
-              description: 'Affectionate and alert, known for their long flowing coat.',
-              imgSrc: 'upload/shihtzu.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 2,
-              breedName: 'Pomeranian',
-              description: 'Lively and bold, this small breed is known for its fluffy coat.',
-              imgSrc: 'upload/pomeranian.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 3,
-              breedName: 'Chihuahua',
-              description: 'Small in size but big in personality.',
-              imgSrc: 'upload/chihuahua.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 4,
-              breedName: 'Yorkshire Terrier',
-              description: 'Known for its silky coat and feisty nature.',
-              imgSrc: 'upload/yorkie.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-          ],
-        },
-        {
-          sizeID: 2,
-          sizeName: 'Medium Breeds',
-          dogs: [
-            {
-              breedID: 5,
-              breedName: 'Beagle',
-              description: 'Curious, friendly, and great for families.',
-              imgSrc: 'upload/beagle.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 6,
-              breedName: 'Cocker Spaniel',
-              description: 'Known for its gentle temperament and playful nature.',
-              imgSrc: 'upload/CockerSpaniel.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 7,
-              breedName: 'Border Collie',
-              description: 'Highly intelligent and energetic, often used for herding.',
-              imgSrc: 'upload/Bordercollie.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-          ],
-        },
-        {
-          sizeID: 3,
-          sizeName: 'Large Breeds',
-          dogs: [
-            {
-              breedID: 8,
-              breedName: 'German Shepherd',
-              description: 'Confident and courageous, often used in police and military roles.',
-              imgSrc: 'upload/german.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 9,
-              breedName: 'Rottweiler',
-              description: 'Loyal and protective, making them excellent guard dogs.',
-              imgSrc: 'upload/rottie.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 10,
-              breedName: 'Golden Retriever',
-              description: 'Friendly and intelligent, popular for families and service work.',
-              imgSrc: 'upload/golden.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 11,
-              breedName: 'Great Dane',
-              description: 'Gentle giant, known for their large size and friendly nature.',
-              imgSrc: 'upload/greatdane.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-            {
-              breedID: 12,
-              breedName: 'Bulldog',
-              description: 'Calm and courageous, known for its distinctive wrinkled face.',
-              imgSrc: 'upload/bulldog.jpg',
-              backgroundColor: '#f8f9fa',
-            },
-          ],
-        },
-      ],
-    };
-  },
-  computed: {
-    filteredSizes() {
-      const query = this.searchQuery.trim().toLowerCase();
-      if (!query) {
-        return this.sizes;
-      }
-      return this.sizes.map(size => {
-        const filteredDogs = size.dogs.filter(dog =>
-          dog.breedName.toLowerCase().includes(query)
-        );
-        return { ...size, dogs: filteredDogs };
-      });
-    },
-  },
-  methods: {
-    addDog() {
-      alert('Add Dog button clicked!'); // Placeholder for adding a dog
-    },
-    editBreed(dog) {
-      // Logic for editing the dog breed
-    },
-    deleteBreed(breedID) {
-      // Logic for deleting the dog breed
-    },
-  },
-};
-</script>
+
