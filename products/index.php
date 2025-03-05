@@ -12,9 +12,8 @@
 <body>
     <div class="container">
         <h2 class="my-4">All Products</h2>
-  
+
         <nav class="mb-4 p-1 d-flex align-items-center justify-content-between">
-            
             <div class="nav-links d-flex">
                 <a href="index.php" class="btn btn-secondary">All Products</a>
                 <a href="live.php" class="btn btn-secondary">Live Products</a>
@@ -23,14 +22,15 @@
                 <a href="lowstock.php" class="btn btn-secondary">Low Stock</a>
             </div>
 
-            
             <form class="d-flex" method="GET" action="index.php">
                 <input class="form-control me-2" type="search" name="search" placeholder="Search Products" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
                 <button class="btn btn-outline-primary" type="submit">Search</button>
             </form>
         </nav>
+        <div class="text-end mb-3">
+            <a href="addproducts.php" class="btn btn-success">Add Product</a>
+        </div>
 
-        
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
@@ -45,7 +45,7 @@
             </thead>
             <tbody>
                 <?php
-               
+                // Search and display products
                 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
                 $sql = "SELECT * FROM products";
                 if ($search) {
@@ -57,7 +57,7 @@
                     while ($row = $result->fetch_assoc()) {
                         $checked = $row['status'] == 'Active' ? 'checked' : '';
 
-                        
+                        // Generate rating circles
                         $rating_circles = '';
                         $rating_percentage = $row['rating_percentage'];
                         $filled_circles = floor($rating_percentage / 20); 
@@ -80,7 +80,7 @@
 
                         echo "<tr>
                                 <td>{$row['rank']}</td>
-                                <td> <img src='{$row['image_url']}' alt='Product Image' style='width: 50px;'> {$row['name']} <br>{$row['id']} </td>
+                                <td> <img src='{$row['image']}' alt='Product Image' style='width: 50px;'> {$row['name']} <br>{$row['id']} </td>
                                 <td>{$row['total_buyers']}</td>
                                 <td>\${$row['price']}</td>
                                 <td>{$row['stock']}</td>

@@ -76,7 +76,7 @@
                         }
                         echo "<tr>
                                 <td>{$row['rank']}</td>
-                                <td> <img src='{$row['image_url']}' alt='Product Image' style='width: 50px;'> {$row['name']} <br>{$row['id']} </td>
+                                <td> <img src='{$row['image']}' alt='Product Image' style='width: 50px;'> {$row['name']} <br>{$row['id']} </td>
                                 <td>{$row['total_buyers']}</td>
                                 <td>\${$row['price']}</td>
                                 <td>{$row['stock']}</td>
