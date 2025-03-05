@@ -45,7 +45,7 @@
             </thead>
             <tbody>
                 <?php
-                // Search and display products
+                
                 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
                 $sql = "SELECT * FROM products";
                 if ($search) {
@@ -57,7 +57,7 @@
                     while ($row = $result->fetch_assoc()) {
                         $checked = $row['status'] == 'Active' ? 'checked' : '';
 
-                        // Generate rating circles
+                        
                         $rating_circles = '';
                         $rating_percentage = $row['rating_percentage'];
                         $filled_circles = floor($rating_percentage / 20); 

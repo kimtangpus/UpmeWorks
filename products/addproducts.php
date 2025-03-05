@@ -1,15 +1,14 @@
 <?php include('connect.php'); ?>
 
 <?php
-$target_dir = "uploads/";  // Directory where images will be saved
+$target_dir = "uploads/";  
 
-// Check if the form has been submitted and file upload is not empty
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['image']) && !empty($_FILES['image']['name'])) {
 
     $target_file = $target_dir . basename($_FILES["image"]["name"]);
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    // Retrieve form data safely
+   
     $name = $conn->real_escape_string($_POST['name']);
     $price = $conn->real_escape_string($_POST['price']);
     $stock = $conn->real_escape_string($_POST['stock']);
@@ -17,33 +16,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['image']) && !empty($_
     $total_buyers = $conn->real_escape_string($_POST['total_buyers']);
     $status = $conn->real_escape_string($_POST['status']);
     
-    // Check if the image file is an actual image
+    
     $check = getimagesize($_FILES["image"]["tmp_name"]);
     if ($check !== false) {
-        // Only allow certain file formats (JPEG, PNG, JPG, GIF)
+        
         $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
         if (in_array($imageFileType, $allowed_types)) {
             
-            // Check if the directory exists, create it if it doesn't
+           
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0755, true);
             }
             
-            // Check if file already exists and rename it if needed
+           
             if (file_exists($target_file)) {
                 $file_name = pathinfo($_FILES["image"]["name"], PATHINFO_FILENAME);
                 $new_file_name = $file_name . '_' . time() . '.' . $imageFileType;
                 $target_file = $target_dir . $new_file_name;
             }
             
-            // Attempt to move the uploaded file to the target directory
+           
             if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
                 
-                // Prepare and bind the SQL statement
+                
                 $stmt = $conn->prepare("INSERT INTO products (name, price, stock, rating_percentage, total_buyers, status, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("sdidiss", $name, $price, $stock, $rating, $total_buyers, $status, $target_file);
                 
-                // Execute the statement
+                
                 if ($stmt->execute()) {
                     header('Location: index.php');
                     exit();
