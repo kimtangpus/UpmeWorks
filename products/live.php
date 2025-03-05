@@ -5,32 +5,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Products</title>
+    <title>Live Products</title>
+   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h2 class="my-4">All Products</h2>
-  
-        <nav class="mb-4 p-1 d-flex align-items-center justify-content-between">
-            
-            <div class="nav-links d-flex">
-                <a href="index.php" class="btn btn-secondary">All Products</a>
-                <a href="live.php" class="btn btn-secondary">Live Products</a>
-                <a href="archive.php" class="btn btn-secondary">Archived Products</a>
-                <a href="outofstock.php" class="btn btn-secondary">Out of Stock</a>
+        <h2 class="my-4">Live Products</h2>
+
+        <nav class="mb-4 d-flex justify-content-between align-items-center p-2">
+            <div class="d-flex">
+                <a href="index.php" class="btn btn-secondary me-2">All Products</a>
+                <a href="live.php" class="btn btn-secondary me-2">Live Products</a>
+                <a href="archive.php" class="btn btn-secondary me-2">Archived Products</a>
+                <a href="outofstock.php" class="btn btn-secondary me-2">Out of Stock</a>
                 <a href="lowstock.php" class="btn btn-secondary">Low Stock</a>
             </div>
-
-            
-            <form class="d-flex" method="GET" action="index.php">
+            <form class="d-flex" method="GET" action="live.php">
                 <input class="form-control me-2" type="search" name="search" placeholder="Search Products" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
                 <button class="btn btn-outline-primary" type="submit">Search</button>
             </form>
         </nav>
 
-        
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
@@ -47,9 +44,10 @@
                 <?php
                
                 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
-                $sql = "SELECT * FROM products";
-                if ($search) {
-                    $sql .= " WHERE name LIKE '%$search%'";
+                $sql = "SELECT * FROM products WHERE status = 'Active'";
+
+                if ($search) {  
+                     $sql .= " AND name LIKE '%$search%'";
                 }
                 $result = $conn->query($sql);
 
@@ -57,7 +55,6 @@
                     while ($row = $result->fetch_assoc()) {
                         $checked = $row['status'] == 'Active' ? 'checked' : '';
 
-                        
                         $rating_circles = '';
                         $rating_percentage = $row['rating_percentage'];
                         $filled_circles = floor($rating_percentage / 20); 
@@ -80,7 +77,7 @@
 
                         echo "<tr>
                                 <td>{$row['rank']}</td>
-                                <td> <img src='{$row['image_url']}' alt='Product Image' style='width: 50px;'> {$row['name']} <br>{$row['id']} </td>
+                                <td>{$row['name']} <img src='{$row['image_url']}' alt='Product Image' style='width: 50px;'></td>
                                 <td>{$row['total_buyers']}</td>
                                 <td>\${$row['price']}</td>
                                 <td>{$row['stock']}</td>
@@ -104,13 +101,14 @@
                               </tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='7'>No products found</td></tr>";
+                    echo "<tr><td colspan='7'>No live products found</td></tr>";
                 }
                 ?>
             </tbody>
         </table>
     </div>
 
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
