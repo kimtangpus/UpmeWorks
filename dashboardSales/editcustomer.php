@@ -7,19 +7,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $total_spent = $_POST['total_spent'];
 
-    // SQL query to update the customer
+    
     $sql = "UPDATE customers SET name='$name', total_spent='$total_spent' WHERE id=$id";
 
-    // Check if the query was successful
+   
     if ($conn->query($sql) === TRUE) {
-        // Redirect to topcustomer.php after successful update
+        
         header("Location: topcustomer.php");
-        exit(); // Make sure to stop script execution after the redirect
+        exit(); 
     } else {
         echo "Error updating customer: " . $conn->error;
     }
 } else {
-    // SQL query to fetch the customer data
+   
     $sql = "SELECT * FROM customers WHERE id=$id";
     $result = $conn->query($sql);
     $customer = $result->fetch_assoc();

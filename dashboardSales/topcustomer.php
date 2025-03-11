@@ -5,8 +5,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-
-// Fetch top customers
 $top_customers_query = "SELECT id, name, SUM(total_spent) AS total_spent 
                         FROM customers 
                         GROUP BY name 
@@ -22,7 +20,7 @@ $top_customers_result = $conn->query($top_customers_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Analytics Dashboard</title>
-    <!-- Bootstrap CSS -->
+   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/sales.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -44,8 +42,6 @@ $top_customers_result = $conn->query($top_customers_query);
                    <a href="monthlysales.php"> <button type="button" class="btn btn-outline-primary">Month - Month</button></a>
                 </div>
 
-
-                    <!-- Top Customers Section -->
                     <div class="col-md-10 p-5">
                         <h3>Top 10 Customers</h3>
                         <ul class="list-group">
@@ -67,7 +63,6 @@ $top_customers_result = $conn->query($top_customers_query);
     </div>
 
 
-    <!-- Bootstrap JS and Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
