@@ -1,0 +1,18 @@
+.sidebar {
+    background-color: #f8f9fa;
+    height: 100vh;
+    padding-top: 20px;
+}
+.main-section {
+    background-color: #e9ecef;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.right-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
