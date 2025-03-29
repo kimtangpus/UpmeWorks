@@ -49,7 +49,10 @@
                     <span>Welcome back, Admin! | Role: Administrator</span>
                     <button class="btn btn-light btn-sm"><i class="bi bi-bell"></i></button>
                     <button class="btn btn-light btn-sm"><i class="bi bi-gear"></i></button>
-                    <button class="btn btn-light btn-sm"><i class="bi bi-box-arrow-right"></i></button>
+                    <a href="logout.php" class="btn btn-light btn-sm">
+    <i class="bi bi-box-arrow-right"></i>
+</a>
+
                 </div>
             </div>
             
