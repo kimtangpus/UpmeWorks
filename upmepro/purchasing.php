@@ -1,3 +1,11 @@
+<?php
+require 'connect.php'; 
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +56,7 @@
                     <span>Welcome back, Admin! | Role: Administrator</span>
                     <button class="btn btn-light btn-sm"><i class="bi bi-bell"></i></button>
                     <button class="btn btn-light btn-sm"><i class="bi bi-gear"></i></button>
-                    <button class="btn btn-light btn-sm"><i class="bi bi-box-arrow-right"></i></button>
+                    <a href="logout.php" class="btn btn-light btn-sm"><i class="bi bi-box-arrow-right"></i></a>
                 </div>
             </div>
 
