@@ -60,7 +60,7 @@ if (!isset($_SESSION['username'])) {
             </div>
 
             <!-- content -->
-            </div>
+        </div>
     </div>
 </div>
 
