@@ -64,52 +64,36 @@ if (!isset($_SESSION['username'])) {
             <div class="row g-0 row-gap-3 my-5">
                     <div class="col-md-4 text-center mb-3">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Customer Master</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Supplier Master</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Pricelist Maintenance</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Purchase Request</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Sales Order Entry</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">PR Approval</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">SO Approval</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">PR Listing</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Delivery Receipt</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Purchase Order Entry</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">DR Approval</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">PO Approval</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Delivery Trip Ticket</button>
-                    </div>
-                    <div class="col-md-4 text-center mb-5">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Sales Invoice</button>
-                    </div>
-                    <div class="col-md-4 text-center mb-5">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Invoice Printing</button>
-                    </div>
-                    <div class="col-md-4 text-center mb-5">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Proof Of Delivery</button>
-                    </div>
-                    <div class="col-md-4 text-center mb-5">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Item Return</button>
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">PO Closeout</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
                             style="background-color: #FFFFFF; width:200px; height: 150px;">Reports</button>
-                    </div>           
+                    </div>
                 </div>
             </div>
     </div>
