@@ -61,6 +61,56 @@ if (!isset($_SESSION['username'])) {
                 </div>
             </div>
             <!-- content -->
+            <div class="row g-0 row-gap-3 my-5">
+                    <div class="col-md-4 text-center mb-3">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Customer Master</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Pricelist Maintenance</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Sales Order Entry</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">SO Approval</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Delivery Receipt</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">DR Approval</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Delivery Trip Ticket</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Sales Invoice</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Invoice Printing</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Proof Of Delivery</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Item Return</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Reports</button>
+                    </div>           
+                </div>
             </div>
     </div>
 </div>

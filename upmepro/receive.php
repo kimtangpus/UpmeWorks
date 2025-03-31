@@ -61,6 +61,52 @@ if (!isset($_SESSION['username'])) {
             </div>
 
             <!-- content -->
+            <div class="row g-0 row-gap-3 my-5">
+                    <div class="col-md-4 text-center mb-3">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Customer Master</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Sales Invoice</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Invoice Printing</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Invoice Cancellation</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Customer Payment</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Credit Memo Entry</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Debit Memo Entry</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Offset Unapplied Docs</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Refund Entry</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">EWT Receivables</button>
+                    </div>
+                    <div class="col-md-4 text-center mb-5">
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Reports</button>
+                    </div>         
+                </div>
             </div>
     </div>
 </div>

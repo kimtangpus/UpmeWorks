@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";  
-$username = "kimzap";        
-$password = "kimzap625";             
+$username = "root";        
+$password = "";             
 $dbname = "upmepro";  
 
 
