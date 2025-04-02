@@ -126,28 +126,108 @@ if (!isset($_SESSION['username'])) {
                 <div class="modal fade" id="orderModal3" tabindex="-1" aria-labelledby="orderModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
-                        <div class="modal-content">
+                        <div class="modal-content" style="width:auto;">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="orderModalLabel">Sales Order Entry</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form>
-                                    <div class="mb-3">
-                                        <label for="customerName" class="form-label">Customer Name</label>
-                                        <input type="text" class="form-control" id="customerName" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="orderDate" class="form-label">Order Date</label>
-                                        <input type="date" class="form-control" id="orderDate" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="orderAmount" class="form-label">Order Amount</label>
-                                        <input type="number" class="form-control" id="orderAmount" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit Order</button>
-                                </form>
+                            <form>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Bill To Information</h6>
+                        <div class="mb-2">
+                            <label class="form-label">Customer Code:</label>
+                            <input type="text" class="form-control" value=""  >
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Address:</label>
+                            <input type="text" class="form-control" value="">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Salesman:</label>
+                            <input type="text" class="form-control" value="" >
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">P.O Ref No:</label>
+                            <input type="text" class="form-control" value="" >
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Pricelist:</label>
+                            <input type="text" class="form-control" value="" >
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Ref. No:</label>
+                            <input type="text" class="form-control" value="" >
+                        </div>
+                    </div>
+                   
+                   
+                    <div class="col-md-6">
+                        <h6>Ship To Information</h6>
+                        <div class="mb-2">
+                            <label class="form-label">Ship To</label>
+                            <input type="text" class="form-control" value="" >
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" value="">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Credit Term</label>
+                            <input type="text" class="form-control" value="" >
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h6>Order Details</h6>
+                <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>UOM</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Amount</th>
+                            <th>Line Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SKU-000000003</td>
+                            <td>ONECIDE 15EC 500ML</td>
+                            <td>PC</td>
+                            <td>10</td>
+                            <td>100</td>
+                            <td>1000.00</td>
+                            <td>test</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Particulars</h6>
+                        <textarea class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p><strong>Sub-Total:</strong> 1111111</p>
+                        <p><strong>Discounts:</strong></p>
+                        <p><strong>Other Charges:</strong> </p>
+                        <p><strong>VAT (12%):</strong></p>
+                        <p><strong>Net Amount:</strong></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary">Close</button>
+                </div>
+            </form>
                             </div>
                         </div>
                     </div>
