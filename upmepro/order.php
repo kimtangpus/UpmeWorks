@@ -73,15 +73,16 @@ if (!isset($_SESSION['username'])) {
                 <!-- content -->
                 <div class="row g-0 row-gap-3 my-5">
                     <div class="col-md-4 text-center mb-3">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal1"
                             style="background-color: #FFFFFF; width:200px; height: 150px;">Customer Master</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
-                            style="background-color: #FFFFFF; width:200px; height: 150px;">Pricelist Maintenance</button>
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal2"
+                            style="background-color: #FFFFFF; width:200px; height: 150px;">Pricelist
+                            Maintenance</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
-                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
+                        <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal3"
                             style="background-color: #FFFFFF; width:200px; height: 150px;">Sales Order Entry</button>
                     </div>
                     <div class="col-md-4 text-center mb-5">
@@ -119,13 +120,43 @@ if (!isset($_SESSION['username'])) {
                     <div class="col-md-4 text-center mb-5">
                         <button type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#orderModal"
                             style="background-color: #FFFFFF; width:200px; height: 150px;">Reports</button>
-                    </div>           
+                    </div>
                 </div>
-
+                <!-- Modal -->
+                <div class="modal fade" id="orderModal3" tabindex="-1" aria-labelledby="orderModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="orderModalLabel">Sales Order Entry</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="customerName" class="form-label">Customer Name</label>
+                                        <input type="text" class="form-control" id="customerName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="orderDate" class="form-label">Order Date</label>
+                                        <input type="date" class="form-control" id="orderDate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="orderAmount" class="form-label">Order Amount</label>
+                                        <input type="number" class="form-control" id="orderAmount" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Order</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--asdasd-->
             </div>
         </div>
     </div>
-    
+
 
 
     <script>
