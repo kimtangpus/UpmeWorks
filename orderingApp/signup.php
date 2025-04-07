@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password, name) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO user     (username, email, password, name) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $username, $email, $hashed_password, $name);
 
     if ($stmt->execute()) {

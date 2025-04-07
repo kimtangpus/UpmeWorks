@@ -2,11 +2,13 @@
 session_start();
 require 'connect.php';
 
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+    $stmt = $conn->prepare("SELECT * FROM user WHERE username = ? LIMIT 1");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -16,6 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['username'] = $user['username'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['name'] = $user['name'];
+$_SESSION['user_id'] = $user['id']; 
+
 
         header("Location: index.php");
         exit();
@@ -46,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3 class="text-center mb-3">Sign In</h3>
             <p class="text-center text-muted mb-4">Enter your credentials to access the system</p>
             
-            <!-- Updated form with PHP action -->
             <form action="login.php" method="POST">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username :</label>
