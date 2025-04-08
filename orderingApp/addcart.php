@@ -2,7 +2,6 @@
 require 'connect.php';
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     echo "User not logged in. Please log in to add items to the cart.";
     exit();
@@ -13,13 +12,11 @@ $product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
 $clothing_id = isset($_POST['clothing_id']) ? (int)$_POST['clothing_id'] : 0;
 $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
 
-// Make sure only one of them is set
 if (($product_id > 0 && $clothing_id > 0) || ($product_id === 0 && $clothing_id === 0)) {
     echo "Invalid input! Please add either a product or a clothing item, not both.";
     exit();
 }
 
-// Helper function to check if item exists
 function itemExists($conn, $id, $table) {
     $stmt = $conn->prepare("SELECT id FROM $table WHERE id = ?");
     $stmt->bind_param("i", $id);
@@ -27,7 +24,6 @@ function itemExists($conn, $id, $table) {
     return $stmt->get_result()->num_rows > 0;
 }
 
-// Add product
 if ($product_id > 0) {
     if (!itemExists($conn, $product_id, 'product')) {
         echo "Product not found.";
@@ -49,7 +45,6 @@ if ($product_id > 0) {
     $stmt->execute();
 }
 
-// Add clothing
 if ($clothing_id > 0) {
     if (!itemExists($conn, $clothing_id, 'clothing')) {
         echo "Clothing item not found.";

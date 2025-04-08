@@ -1,6 +1,3 @@
-/* upmestyles.css */
-
-/* Reset some elements */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f9f9f9;
@@ -8,7 +5,7 @@ body {
     padding: 0;
   }
   
-  /* Navbar customization */
+  
   .navbar {
     background-color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -24,14 +21,13 @@ body {
     text-decoration: underline;
   }
   
-  /* Section header */
+ 
   #gallery h5 {
     font-size: 30px;
     font-weight: 300;
     color: #333;
   }
   
-  /* Product card styling */
   .card {
     display: flex;
     flex-direction: column;
@@ -67,7 +63,7 @@ body {
     margin-bottom: 8px;
   }
   form {
-    margin-top: auto; /* Pushes the form to the bottom */
+    margin-top: auto; 
   }
   
   form .form-label {
@@ -79,13 +75,12 @@ body {
     font-size: 14px;
   }  
   
-  /* Quantity input */
   input[type="number"] {
     padding: 5px 10px;
     font-size: 14px;
   }
   
-  /* Buttons */
+
   .btn-success {
     background-color: #016046;
     border: none;
@@ -100,7 +95,7 @@ body {
     background-color: #014f3b;
   }
   
-  /* Search bar */
+
   form[role="search"] input[type="search"] {
     border-radius: 8px;
     padding: 6px 12px;
@@ -116,7 +111,7 @@ body {
     color: white;
   }
   
-  /* Cart and logout icons */
+
   .bi {
     font-size: 18px;
     vertical-align: middle;
