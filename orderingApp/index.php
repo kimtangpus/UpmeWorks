@@ -45,7 +45,7 @@ if (isset($_GET['search'])) {
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="index.php">Electronics</a>
+          <a class="nav-link active" href="index.php">Electronics</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="second.php">Clothing</a>
@@ -99,7 +99,8 @@ if (isset($_GET['search'])) {
               ₱<?php echo htmlspecialchars($row['price']); ?>
               </p>
               <form action="addcart.php" method="POST">
-                <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+              
+              <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
                 <div class="d-flex align-items-center mb-3">
                   <label for="quantity" class="form-label me-2" style="color: #333;">Quantity:</label>
                   <input type="number" id="quantity" name="quantity" value="1" min="1" max="99"

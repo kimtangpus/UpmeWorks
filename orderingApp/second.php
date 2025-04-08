@@ -18,7 +18,7 @@ if (isset($_GET['search'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UPmePro</title>
+  <title>UPmePro - Clothing</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
@@ -48,7 +48,7 @@ if (isset($_GET['search'])) {
           <a class="nav-link" href="index.php">Electronics</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="second.php">Clothing</a>
+          <a class="nav-link active" href="second.php">Clothing</a>
         </li>
       </ul>
 
@@ -67,16 +67,15 @@ if (isset($_GET['search'])) {
   </div>
 </nav>
 
+<section id="gallery">
+  <div class="container-fluid">
+    <div class="row my-5">
+      <h5 class="display-3 text-center w-100" style="font-size: 50px;">Clothing</h5>
+    </div>
+    <div class="row my-5 pb-5 justify-content-center">
 
-  <section id="gallery">
-    <div class="container-fluid">
-      <div class="row my-5">
-        <h5 class="display-3 text-center w-100" style="font-size: 50px;">Clothing</h5>
-      </div>
-      <div class="row my-5 pb-5 justify-content-center">
-
-        <?php
-      $sql = "SELECT * FROM  clothing";
+      <?php
+      $sql = "SELECT * FROM clothing";
       if ($searchTerm) {
           $sql .= " WHERE item_name LIKE '%$searchTerm%' OR description LIKE '%$searchTerm%'";
       }
@@ -85,42 +84,47 @@ if (isset($_GET['search'])) {
       if ($result->num_rows > 0):
         while($row = $result->fetch_assoc()):
       ?>
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-          <div class="card" style="background-color: #cce3cc; height: 600px;">
-            <img src="images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Product Image">
-            <div class="card-body">
-              <h5 class="card-title" style="color: #333;">
-                <?php echo htmlspecialchars($row['item_name']); ?>
-              </h5>
-              <p class="card-text" style="color: #333;">
-                <?php echo htmlspecialchars($row['description']); ?>
-              </p>
-              <p class="card-text" style="color: #333;">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+        <div class="card" style="background-color: #f8f9fa; height: 600px;">
+          <img src="images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Product Image">
+          <div class="card-body">
+            <h5 class="card-title" style="color: #333;">
+              <?php echo htmlspecialchars($row['item_name']); ?>
+            </h5>
+            <p class="card-text" style="color: #333;">
+              <?php echo htmlspecialchars($row['description']); ?>
+            </p>
+            <p class="card-text" style="color: #333;">
               ₱<?php echo htmlspecialchars($row['price']); ?>
-              </p>
-              <form action="addcart.php" method="POST">
-                <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                <div class="d-flex align-items-center mb-3">
-                  <label for="quantity" class="form-label me-2" style="color: #333;">Quantity:</label>
-                  <input type="number" id="quantity" name="quantity" value="1" min="1" max="99"
-                    class="form-control w-50" required>
-                </div>
-                <button type="submit" class="btn btn-success"
-                  style="background-color: #016046; border: none; padding: 10px 20px; font-size: 16px;">
-                  Add to Cart
-                </button>
-              </form>
-
-            </div>
+            </p>
+            <form action="addcart.php" method="POST">
+              <input type="hidden" name="clothing_id" value="<?php echo $row['id']; ?>">
+              <div class="d-flex align-items-center mb-3">
+                <label for="quantity" class="form-label me-2" style="color: #333;">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="99"
+                  class="form-control w-50" required>
+              </div>
+              <button type="submit" class="btn btn-success"
+                style="background-color: #016046; border: none; padding: 10px 20px; font-size: 16px;">
+                Add to Cart
+              </button>
+            </form>
           </div>
         </div>
-        <?php
+      </div>
+      <?php
         endwhile;
       else:
         echo "<p class='text-center'>No products found.</p>";
       endif;
       ?>
-  </section>
+    </div>
+  </div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
 </body>
 
