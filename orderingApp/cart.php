@@ -48,13 +48,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
-    $checkout_sql = "INSERT INTO ORDERS (user_id, item_name, quantity, price, item_type) VALUES (?, ?, ?, ?, ?)";
+    // Fetch the user's name
+    $user_sql = "SELECT name FROM user WHERE id = ?";
+    $user_stmt = $conn->prepare($user_sql);
+    $user_stmt->bind_param("i", $user_id);
+    $user_stmt->execute();
+    $user_result = $user_stmt->get_result();
+    $user_row = $user_result->fetch_assoc();
+    $user_name = $user_row['name'];
+
+    // Insert into ORDERS table with user's name
+    $checkout_sql = "INSERT INTO ORDERS (user_id, user_name, item_name, quantity, price, item_type) VALUES (?, ?, ?, ?, ?, ?)";
     $checkout_stmt = $conn->prepare($checkout_sql);
 
     $result->data_seek(0); // Reset result pointer to loop again
 
     while ($row = $result->fetch_assoc()) {
-        $checkout_stmt->bind_param("isids", $user_id, $row['item_name'], $row['quantity'], $row['price'], $row['item_type']);
+        $checkout_stmt->bind_param("issids", $user_id, $user_name, $row['item_name'], $row['quantity'], $row['price'], $row['item_type']);
         $checkout_stmt->execute();
     }
 
@@ -68,6 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
     header("Location: index.php");
     exit();
 }
+
+
 
 
 ?>
