@@ -33,8 +33,9 @@ if (isset($_GET['search'])) {
 
 <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
+
     <a class="navbar-brand" href="index.php">
-      <img src="pic/UPmePRO_Revised-removebg-preview.png" alt="logo" class="img-fluid" style="width: 150px;">
+      <img src="images/UPmePRO_Revised-removebg-preview.png" class="img-fluid" style="width: 150px;">
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
