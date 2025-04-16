@@ -87,17 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $invoice_date = $_POST['invoice_date'] ?? date('Y-m-d');
         $due_date = $_POST['due_date'] ?? null;
         $reference_no = $_POST['reference_no'] ?? '';
+        $contact_no = $_POST['contact_no'] ?? '';
         $address = $_POST['address'] ?? '';
         $user_name_posted = $_POST['bill_to'] ?? $user_name;
 
       
-        $invoice_sql = "INSERT INTO INVOICE 
-            (user_id, user_name, invoice_date, due_date, reference_no, address, remarks, discount, vat, withholding, subtotal, grand_total, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $invoice_sql = "INSERT INTO INVOICE (user_id, user_name, invoice_date, due_date, reference_no, address, contact_no, remarks, discount, vat, withholding, subtotal, grand_total, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $invoice_stmt = $conn->prepare($invoice_sql);
-        $invoice_stmt->bind_param("issssssiiidd", $user_id, $user_name_posted, $invoice_date, $due_date, $reference_no, $address, $remarks, $discount, $vat, $withholding, $subtotal, $grandTotal);
-        $invoice_stmt->execute();
+        $invoice_stmt->bind_param("issssssssdddd",  $user_id,  $user_name_posted,  $invoice_date,  $due_date,  $reference_no,  $address,  $contact_no,  $remarks,  $discount,  $vat,  $withholding,  $subtotal,  $grandTotal);
+            $invoice_stmt->execute();
         $invoice_id = $invoice_stmt->insert_id;
 
         $item_sql = "INSERT INTO INVOICEITEMS (invoice_id, item_name, quantity, price, amount) VALUES (?, ?, ?, ?, ?)";
@@ -169,6 +169,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="col-md-6">
             <label for="referenceNo" class="form-label">Reference No.</label>
             <input type="text" class="form-control" id="referenceNo" name="reference_no" placeholder="Optional">
+        </div>
+        <div class="col-md-6">
+            <label for="contactNo" class="form-label">Contact Number</label>
+            <input type="text" class="form-control" id="contactNo" name="contact_no" placeholder="Optional">
         </div>
         <div class="col-12">
             <label for="address" class="form-label">Address</label>
