@@ -9,12 +9,13 @@ if (!isset($_SESSION['username'])) {
 
 $user_id = $_SESSION['user_id'];
 
-$sql = "SELECT CART.id AS cart_id, PRODUCT.item_name, PRODUCT.description, PRODUCT.image, CART.quantity, PRODUCT.price, 'product' AS item_type
+
+$sql = "SELECT CART.id AS cart_id, PRODUCT.id AS product_id, PRODUCT.item_name, PRODUCT.description, PRODUCT.image, CART.quantity, PRODUCT.price, 'product' AS item_type
         FROM CART
         JOIN PRODUCT ON CART.product_id = PRODUCT.id
         WHERE CART.user_id = ?
         UNION
-        SELECT CART.id AS cart_id, CLOTHING.item_name, CLOTHING.description, CLOTHING.image, CART.quantity, CLOTHING.price, 'clothing' AS item_type
+        SELECT CART.id AS cart_id, CLOTHING.id AS product_id, CLOTHING.item_name, CLOTHING.description, CLOTHING.image, CART.quantity, CLOTHING.price, 'clothing' AS item_type
         FROM CART
         JOIN CLOTHING ON CART.clothing_id = CLOTHING.id
         WHERE CART.user_id = ?";
@@ -35,24 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    if (isset($_POST['edit'])) {
-        $cart_id = $_POST['cart_id'];
-        $new_quantity = $_POST['quantity'];
-        $update_sql = "UPDATE CART SET quantity = ? WHERE id = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("ii", $new_quantity, $cart_id);
-        $update_stmt->execute();
-        header("Location: cart.php");
-        exit();
-    }
-
     if (isset($_POST['checkout'])) {
-        $remarks = $_POST['remarks'] ?? '';
-        $discount = $_POST['discount'] ?? 0;
-        $vat = isset($_POST['vat']) ? 1 : 0;
+        $remarks = $_POST['particulars'] ?? '';
+        $discount = (float) ($_POST['discounts'] ?? 0);
+        $vat = isset($_POST['tax_inclusive']) ? 1 : 0;
         $withholding = isset($_POST['withholding']) ? 1 : 0;
 
-        
         $user_sql = "SELECT name FROM user WHERE id = ?";
         $user_stmt = $conn->prepare($user_sql);
         $user_stmt->bind_param("i", $user_id);
@@ -61,22 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user_row = $user_result->fetch_assoc();
         $user_name = $user_row['name'];
 
-    
         $subtotal = 0;
         $cartItems = [];
 
-        foreach ($_POST['items'] as $id => $item) {
-            $desc = $item['description'];
-            $qty = (int)$item['quantity'];
-            $rate = (float)$item['rate'];
-            $amount = $qty * $rate;
+        $item_query = $conn->prepare($sql);
+        $item_query->bind_param("ii", $user_id, $user_id);
+        $item_query->execute();
+        $item_result = $item_query->get_result();
+
+        while ($row = $item_result->fetch_assoc()) {
+            $amount = $row['price'] * $row['quantity'];
             $subtotal += $amount;
 
             $cartItems[] = [
-                'description' => $desc,
-                'quantity' => $qty,
-                'rate' => $rate,
-                'amount' => $amount
+                'description' => $row['item_name'],
+                'quantity' => $row['quantity'],
+                'rate' => $row['price'],
+                'amount' => $amount,
+                'item_type' => $row['item_type']
             ];
         }
 
@@ -84,21 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $withholdingAmount = $withholding ? $subtotal * 0.02 : 0;
         $grandTotal = $subtotal + $vatAmount - $discount - $withholdingAmount;
 
-        $invoice_date = $_POST['invoice_date'] ?? date('Y-m-d');
+        $invoice_date = $_POST['doc_date'] ?? date('Y-m-d');
         $due_date = $_POST['due_date'] ?? null;
-        $reference_no = $_POST['reference_no'] ?? '';
-        $contact_no = $_POST['contact_no'] ?? '';
-        $address = $_POST['address'] ?? '';
+        $reference_no = $_POST['ref_no'] ?? '';
+        $contact_no = $_POST['customer_code'] ?? '';
+        $address = $_POST['bill_address'] ?? '';
         $user_name_posted = $_POST['bill_to'] ?? $user_name;
 
-      
         $invoice_sql = "INSERT INTO INVOICE (user_id, user_name, invoice_date, due_date, reference_no, address, contact_no, remarks, discount, vat, withholding, subtotal, grand_total, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        
         $invoice_stmt = $conn->prepare($invoice_sql);
-        $invoice_stmt->bind_param("issssssssdddd",  $user_id,  $user_name_posted,  $invoice_date,  $due_date,  $reference_no,  $address,  $contact_no,  $remarks,  $discount,  $vat,  $withholding,  $subtotal,  $grandTotal);
-            $invoice_stmt->execute();
+        $invoice_stmt->bind_param("issssssssdddd", $user_id, $user_name_posted, $invoice_date, $due_date, $reference_no, $address, $contact_no, $remarks, $discount, $vat, $withholding, $subtotal, $grandTotal);
+        $invoice_stmt->execute();
         $invoice_id = $invoice_stmt->insert_id;
+       
 
         $item_sql = "INSERT INTO INVOICEITEMS (invoice_id, item_name, quantity, price, amount) VALUES (?, ?, ?, ?, ?)";
         $item_stmt = $conn->prepare($item_sql);
@@ -106,33 +97,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $order_sql = "INSERT INTO ORDERS (user_id, user_name, item_name, quantity, price, item_type) VALUES (?, ?, ?, ?, ?, ?)";
         $order_stmt = $conn->prepare($order_sql);
 
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        foreach ($cartItems as $i => $item) {
-            $row = $result->fetch_assoc(); 
-
-           
+        foreach ($cartItems as $item) {
             $item_stmt->bind_param("isidd", $invoice_id, $item['description'], $item['quantity'], $item['rate'], $item['amount']);
             $item_stmt->execute();
 
-            
-            $order_stmt->bind_param("issids", $user_id, $user_name, $item['description'], $item['quantity'], $item['rate'], $row['item_type']);
+            $order_stmt->bind_param("issids", $user_id, $user_name, $item['description'], $item['quantity'], $item['rate'], $item['item_type']);
             $order_stmt->execute();
         }
 
-       
         $clear_cart_sql = "DELETE FROM CART WHERE user_id = ?";
         $clear_cart_stmt = $conn->prepare($clear_cart_sql);
         $clear_cart_stmt->bind_param("i", $user_id);
         $clear_cart_stmt->execute();
 
-        header("Location: index.php");
+        header("Location: receipt.php?invoice_id=" . $invoice_id);
         exit();
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -147,128 +130,176 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
+<div class="container py-4">
+  <div class="card shadow-sm p-4">
+    <h5 class="mb-3"><strong>Sales Invoice No :</strong> <span class="text-primary"><?php echo $invoice_id; ?></span></h5>
 
-<div class="container py-5">
-    <h2 class="text-center mb-4 text-success">Cart</h2>
     <form action="cart.php" method="POST">
-    <div class="mb-4 p-4 bg-white rounded shadow-sm">
-    <h4 class="text-success mb-3">Create New Invoice</h4>
-    <div class="row g-3">
+      <!-- Bill To and Ship To -->
+      <div class="row g-3">
         <div class="col-md-6">
-            <label for="invoiceDate" class="form-label">Invoice Date</label>
-            <input type="date" class="form-control" id="invoiceDate" name="invoice_date" value="<?php echo date('Y-m-d'); ?>">
+          <h6>Bill To Information</h6>
+          <div class="mb-2">
+            <label class="form-label">Customer Code</label>
+            <input type="text" class="form-control" name="customer_code">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Bill Address</label>
+            <input type="text" class="form-control" name="bill_address">
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Salesman</label>
+              <select class="form-select" name="salesman">
+                <option value="">Select</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Pricelist</label>
+              <select class="form-select" name="pricelist">
+                <option value="">COD</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">P.O Ref No</label>
+              <input type="text" class="form-control" name="po_ref_no">
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label text-danger">Ref. No:</label>
+              <input type="text" class="form-control border-danger" name="ref_no">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h6>Ship To Information</h6>
+          <div class="mb-2">
+            <label class="form-label">Ship To</label>
+            <input type="text" class="form-control" name="ship_to">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Ship Address</label>
+            <input type="text" class="form-control" name="ship_address">
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Credit Term</label>
+              <select class="form-select" name="credit_term">
+                <option value="Credit">Credit</option>
+                <option value="Cash">Cash</option>
+                <option value="Debit">Debit</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Doc Date</label>
+              <input type="date" class="form-control" name="doc_date" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Due Date</label>
+              <input type="date" class="form-control" name="due_date">
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Delivery Date</label>
+              <input type="date" class="form-control" name="delivery_date">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item Table -->
+      <div class="table-responsive my-4">
+        <table class="table table-bordered text-center align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Code</th>
+              <th>Description</th>
+              <th>UOM</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Amount</th>
+              <th>Remarks</th>
+              <th>Site</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $total = 0;
+            while ($row = $result->fetch_assoc()):
+              $amount = $row['price'] * $row['quantity'];
+              $total += $amount;
+            ?>
+            <tr>
+              <td><?php echo $row['product_id']; ?></td>
+              <td><?php echo htmlspecialchars($row['item_name']); ?></td>
+              <td>PC</td>
+              <td><?php echo $row['quantity']; ?></td>
+              <td><?php echo number_format($row['price'], 2); ?></td>
+              <td><?php echo number_format($amount, 2); ?></td>
+              <td><input type="text" class="form-control form-control-sm" name="remarks[]"></td>
+              <td>
+                <select class="form-select form-select-sm" name="site[]">
+                  <option>HO-MAIN</option>
+                </select>
+              </td>
+              <td>
+                <form method="POST" action="cart.php">
+                  <input type="hidden" name="cart_id" value="<?php echo $row['cart_id']; ?>">
+                  <button type="submit" name="delete" class="btn btn-sm btn-outline-danger">🗑</button>
+                </form>
+              </td>
+            </tr>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+        <a href="index.php"><button type="button" class="btn btn-sm btn-outline-secondary">+</button></a>
+      </div>
+
+      <!-- Particulars and Totals -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Particulars</label>
+          <textarea class="form-control" name="particulars" rows="2"></textarea>
         </div>
         <div class="col-md-6">
-            <label for="dueDate" class="form-label">Due Date</label>
-            <input type="date" class="form-control" id="dueDate" name="due_date">
+          <div class="bg-light border rounded p-3">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Total Qty:</span>
+              <input type="text" class="form-control form-control-sm w-50 text-end" name="total_qty" value="120.00">
+            </div>
+            <div class="form-check mb-2">
+              <input type="checkbox" class="form-check-input" id="tax_inclusive" name="tax_inclusive">
+              <label class="form-check-label" for="tax_inclusive">Tax Inclusive?</label>
+            </div>
+            <div class="d-flex justify-content-between mb-1"><span>Sub-Total:</span><span>₱<?php echo number_format($total, 2); ?></span></div>
+            <div class="d-flex justify-content-between mb-1"><span>Discounts:</span><input type="text" class="form-control form-control-sm w-50 text-end" name="discounts" value="0.00"></div>
+            <div class="d-flex justify-content-between mb-1"><span>Other Charges:</span><input type="text" class="form-control form-control-sm w-50 text-end" name="other_charges" value="0.00"></div>
+            <div class="d-flex justify-content-between mb-1"><span>VAT (12%):</span><input type="text" class="form-control form-control-sm w-50 text-end" name="vat" value="0.00"></div>
+            <div class="d-flex justify-content-between mb-1"><span>Net Of VAT:</span><input type="text" class="form-control form-control-sm w-50 text-end" name="net_vat" value="0.00"></div>
+            <div class="d-flex justify-content-between fw-bold mt-2"><span>Net Amount:</span><span>₱<?php echo number_format($total, 2); ?></span></div>
+          </div>
         </div>
-        <div class="col-md-6">
-            <label for="billTo" class="form-label">Bill To</label>
-            <input type="text" class="form-control" id="billTo" name="bill_to" value="<?php echo htmlspecialchars($user_name ?? ''); ?>">
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="d-flex justify-content-between mt-4">
+        <div>
+          <span class="me-3"><strong>Status:</strong> Open</span>
+          <a href="index.php"><button type="button" class="btn btn-outline-secondary btn-sm">Cancel Invoice</button></a>
         </div>
-        <div class="col-md-6">
-            <label for="referenceNo" class="form-label">Reference No.</label>
-            <input type="text" class="form-control" id="referenceNo" name="reference_no" placeholder="Optional">
+        <div>
+          <button type="submit" name="checkout" class="btn btn-success me-2">OK</button>
+          <a href="index.php"><button type="button" class="btn btn-secondary">Close</button></a>
         </div>
-        <div class="col-md-6">
-            <label for="contactNo" class="form-label">Contact Number</label>
-            <input type="text" class="form-control" id="contactNo" name="contact_no" placeholder="Optional">
-        </div>
-        <div class="col-12">
-            <label for="address" class="form-label">Address</label>
-            <textarea class="form-control" id="address" name="address" rows="2" placeholder="Billing address..."></textarea>
-        </div>
-    </div>
+      </div>
+    </form>
+  </div>
 </div>
 
-        <div class="table-responsive mb-3">
-            <table class="table table-bordered align-middle text-center" id="cartTable">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 35%">Description</th>
-                        <th style="width: 10%">Qty</th>
-                        <th style="width: 15%">Measure</th>
-                        <th style="width: 15%">Rate</th>
-                        <th style="width: 15%">Amount</th>
-                        <th style="width: 10%"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    $total = 0;
-                    while ($row = $result->fetch_assoc()):
-                        $amount = $row['price'] * $row['quantity'];
-                        $total += $amount;
-                    ?>
-                    <tr>
-                        <td>
-                            <input type="text" name="items[<?php echo $row['cart_id']; ?>][description]" class="form-control" value="<?php echo htmlspecialchars($row['item_name']); ?>">
-                        </td>
-                        <td>
-                            <input type="number" name="items[<?php echo $row['cart_id']; ?>][quantity]" class="form-control text-end qty" value="<?php echo $row['quantity']; ?>" min="1">
-                        </td>
-                        <td>
-                            <input type="text" name="items[<?php echo $row['cart_id']; ?>][measure]" class="form-control text-center" placeholder="pcs" value="pcs">
-                        </td>
-                        <td>
-                            <input type="number" name="items[<?php echo $row['cart_id']; ?>][rate]" class="form-control text-end rate" step="0.01" value="<?php echo $row['price']; ?>">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext text-end amount" readonly value="<?php echo number_format($amount, 2); ?>">
-                        </td>
-                        <td>
-                        <form action="cart.php" method="POST" style="display:inline;">
-        <input type="hidden" name="cart_id" value="<?php echo $row['cart_id']; ?>">
-        <button type="submit" name="delete" class="btn btn-sm btn-outline-danger">×</button>
-    </form>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="d-flex justify-content-start mb-4">
-            <a href="index.php"><button type="button" id="addRow" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-circle"></i> Add Item
-            </button>
-                    </a>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="remarks" class="form-label">Remarks</label>
-                <textarea name="remarks" id="remarks" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-2 d-flex justify-content-between">
-                    <span>Subtotal</span>
-                    <span id="subtotal">₱<?php echo number_format($total, 2); ?></span>
-                </div>
-                <div class="mb-2 d-flex justify-content-between">
-                    <span>Discounts</span>
-                    <input type="number" class="form-control form-control-sm w-25 text-end" id="discount" name="discount" value="0">
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" value="1" id="vat" name="vat">
-                    <label class="form-check-label" for="vat">Add VAT 12%</label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" value="1" id="withholding" name="withholding">
-                    <label class="form-check-label" for="withholding">Less Withholding Tax</label>
-                </div>
-                <div class="mt-3 d-flex justify-content-between fw-bold">
-                    <span>Grand Total</span>
-                    <span id="grandTotal">₱<?php echo number_format($total, 2); ?></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-end mt-4">
-            <button type="submit" name="checkout" class="btn btn-success px-4">Create Invoice</button>
-        </div>
-    </form>
-</div>
 
 
    
