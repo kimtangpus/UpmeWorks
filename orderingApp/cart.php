@@ -8,6 +8,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$user_name = $_SESSION['name'];
 
 
 $sql = "SELECT CART.id AS cart_id, PRODUCT.id AS product_id, PRODUCT.item_name, PRODUCT.description, PRODUCT.image, CART.quantity, PRODUCT.price, 'product' AS item_type
@@ -37,58 +38,82 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (isset($_POST['checkout'])) {
-        $remarks = $_POST['particulars'] ?? '';
-        $discount = (float) ($_POST['discounts'] ?? 0);
-        $vat = isset($_POST['tax_inclusive']) ? 1 : 0;
-        $withholding = isset($_POST['withholding']) ? 1 : 0;
-
-        $user_sql = "SELECT name FROM user WHERE id = ?";
-        $user_stmt = $conn->prepare($user_sql);
-        $user_stmt->bind_param("i", $user_id);
-        $user_stmt->execute();
-        $user_result = $user_stmt->get_result();
-        $user_row = $user_result->fetch_assoc();
-        $user_name = $user_row['name'];
-
-        $subtotal = 0;
-        $cartItems = [];
-
-        $item_query = $conn->prepare($sql);
-        $item_query->bind_param("ii", $user_id, $user_id);
-        $item_query->execute();
-        $item_result = $item_query->get_result();
-
-        while ($row = $item_result->fetch_assoc()) {
-            $amount = $row['price'] * $row['quantity'];
-            $subtotal += $amount;
-
-            $cartItems[] = [
-                'description' => $row['item_name'],
-                'quantity' => $row['quantity'],
-                'rate' => $row['price'],
-                'amount' => $amount,
-                'item_type' => $row['item_type']
-            ];
-        }
-
-        $vatAmount = $vat ? $subtotal * 0.12 : 0;
-        $withholdingAmount = $withholding ? $subtotal * 0.02 : 0;
-        $grandTotal = $subtotal + $vatAmount - $discount - $withholdingAmount;
-
-        $invoice_date = $_POST['doc_date'] ?? date('Y-m-d');
-        $due_date = $_POST['due_date'] ?? null;
-        $reference_no = $_POST['ref_no'] ?? '';
-        $contact_no = $_POST['customer_code'] ?? '';
-        $address = $_POST['bill_address'] ?? '';
-        $user_name_posted = $_POST['bill_to'] ?? $user_name;
-
-        $invoice_sql = "INSERT INTO INVOICE (user_id, user_name, invoice_date, due_date, reference_no, address, contact_no, remarks, discount, vat, withholding, subtotal, grand_total, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        
-        $invoice_stmt = $conn->prepare($invoice_sql);
-        $invoice_stmt->bind_param("issssssssdddd", $user_id, $user_name_posted, $invoice_date, $due_date, $reference_no, $address, $contact_no, $remarks, $discount, $vat, $withholding, $subtotal, $grandTotal);
-        $invoice_stmt->execute();
-        $invoice_id = $invoice_stmt->insert_id;
+      $remarks = $_POST['particulars'] ?? '';
+      $discount = (float) ($_POST['discounts'] ?? 0);
+      $vat = isset($_POST['tax_inclusive']) ? 1 : 0;
+      $withholding = isset($_POST['withholding']) ? 1 : 0;
+  
+      // New fields
+      $po_ref_no = $_POST['po_ref_no'] ?? '';
+      $ship_to = $_POST['ship_to'] ?? '';
+      $ship_address = $_POST['ship_address'] ?? '';
+      $credit_term = $_POST['credit_term'] ?? '';
+      $delivery_date = $_POST['delivery_date'] ?? null;
+      $salesman = $_POST['salesman'] ?? '';
+      $pricelist = $_POST['pricelist'] ?? '';
+  
+      // Existing fields
+      $invoice_date = $_POST['doc_date'] ?? date('Y-m-d');
+      $due_date = $_POST['due_date'] ?? null;
+      $reference_no = $_POST['ref_no'] ?? '';
+      $contact_no = $_POST['customer_code'] ?? '';
+      $address = $_POST['bill_address'] ?? '';
+      $user_name_posted = $_POST['bill_to'] ?? $user_name;
+      
+  
+      // Calculations...
+      $subtotal = 0;
+      $cartItems = [];
+      $item_query = $conn->prepare($sql);
+      $item_query->bind_param("ii", $user_id, $user_id);
+      $item_query->execute();
+      $item_result = $item_query->get_result();
+      while ($row = $item_result->fetch_assoc()) {
+          $amount = $row['price'] * $row['quantity'];
+          $subtotal += $amount;
+          $cartItems[] = [
+              'description' => $row['item_name'],
+              'quantity' => $row['quantity'],
+              'rate' => $row['price'],
+              'amount' => $amount,
+              'item_type' => $row['item_type']
+          ];
+      }
+  
+      $vatAmount = $vat ? $subtotal * 0.12 : 0;
+      $withholdingAmount = $withholding ? $subtotal * 0.02 : 0;
+      $grandTotal = $subtotal + $vatAmount - $discount - $withholdingAmount;
+  
+      // Update INSERT query
+      $invoice_sql = "INSERT INTO INVOICE (user_id, user_name, invoice_date, due_date, reference_no, address, contact_no, remarks, discount, vat, withholding, subtotal, grand_total, po_ref_no, ship_to, ship_address, credit_term, delivery_date, salesman, pricelist, created_at)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+  
+      $invoice_stmt = $conn->prepare($invoice_sql);
+      $invoice_stmt->bind_param(
+          "issssssssddddsssssss",
+          $user_id,
+          $user_name_posted,
+          $invoice_date,
+          $due_date,
+          $reference_no,
+          $address,
+          $contact_no,
+          $remarks,
+          $discount,
+          $vat,
+          $withholding,
+          $subtotal,
+          $grandTotal,
+          $po_ref_no,
+          $ship_to,
+          $ship_address,
+          $credit_term,
+          $delivery_date,
+          $salesman,
+          $pricelist
+      );
+      $invoice_stmt->execute();
+      $invoice_id = $invoice_stmt->insert_id;
        
 
         $item_sql = "INSERT INTO INVOICEITEMS (invoice_id, item_name, quantity, price, amount) VALUES (?, ?, ?, ?, ?)";
@@ -132,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 <div class="container py-4">
   <div class="card shadow-sm p-4">
-    <h5 class="mb-3"><strong>Sales Invoice No :</strong> <span class="text-primary"><?php echo $invoice_id; ?></span></h5>
+  <h5 class="mb-3"><strong>Sales Invoice</strong> <span class="text-primary"></span></h5>
 
     <form action="cart.php" method="POST">
       <!-- Bill To and Ship To -->
@@ -140,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="col-md-6">
           <h6>Bill To Information</h6>
           <div class="mb-2">
-            <label class="form-label">Customer Code</label>
+            <label class="form-label">Contact No</label>
             <input type="text" class="form-control" name="customer_code">
           </div>
           <div class="mb-2">
@@ -151,13 +176,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="col-md-6 mb-2">
               <label class="form-label">Salesman</label>
               <select class="form-select" name="salesman">
-                <option value="">Select</option>
+                <option value="Kim">Kim</option>
+                <option value="Tim">Tim</option>
               </select>
             </div>
             <div class="col-md-6 mb-2">
               <label class="form-label">Pricelist</label>
               <select class="form-select" name="pricelist">
-                <option value="">COD</option>
+                <option value="COD">COD</option>
               </select>
             </div>
           </div>
