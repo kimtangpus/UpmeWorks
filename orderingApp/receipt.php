@@ -79,6 +79,7 @@ $items = $stmt_items->get_result();
                 <th>Description</th>
                 <th>Quantity</th>
                 <th>Rate</th>
+                <th>Remarks</th>
                 <th>Amount</th>
             </tr>
         </thead>
@@ -88,29 +89,30 @@ $items = $stmt_items->get_result();
                 <td><?php echo htmlspecialchars($item['item_name']); ?></td>
                 <td><?php echo $item['quantity']; ?></td>
                 <td>₱<?php echo number_format($item['price'], 2); ?></td>
+                <td><?php echo htmlspecialchars($item['remarks']); ?></td>
                 <td>₱<?php echo number_format($item['amount'], 2); ?></td>
             </tr>
         <?php endwhile; ?>
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="3" class="text-end">Subtotal:</th>
+                <th colspan="4" class="text-end">Subtotal:</th>
                 <td>₱<?php echo number_format($invoice['subtotal'], 2); ?></td>
             </tr>
             <tr>
-                <th colspan="3" class="text-end">Discount:</th>
+                <th colspan="4" class="text-end">Discount:</th>
                 <td>-₱<?php echo number_format($invoice['discount'], 2); ?></td>
             </tr>
             <tr>
-                <th colspan="3" class="text-end">VAT (12%):</th>
+                <th colspan="4" class="text-end">VAT (12%):</th>
                 <td>₱<?php echo $invoice['vat'] ? number_format($invoice['subtotal'] * 0.12, 2) : '0.00'; ?></td>
             </tr>
             <tr>
-                <th colspan="3" class="text-end">Withholding Tax (2%):</th>
+                <th colspan="4" class="text-end">Withholding Tax (2%):</th>
                 <td>-₱<?php echo $invoice['withholding'] ? number_format($invoice['subtotal'] * 0.02, 2) : '0.00'; ?></td>
             </tr>
             <tr class="fw-bold">
-                <th colspan="3" class="text-end">Grand Total:</th>
+                <th colspan="4" class="text-end">Grand Total:</th>
                 <td>₱<?php echo number_format($invoice['grand_total'], 2); ?></td>
             </tr>
         </tfoot>

@@ -122,14 +122,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $order_sql = "INSERT INTO ORDERS (user_id, user_name, item_name, quantity, price, item_type) VALUES (?, ?, ?, ?, ?, ?)";
         $order_stmt = $conn->prepare($order_sql);
 
-        foreach ($cartItems as $item) {
-            $item_stmt->bind_param("isidd", $invoice_id, $item['description'], $item['quantity'], $item['rate'], $item['amount']);
-            $item_stmt->execute();
+        $remarksArray = $_POST['remarks'] ?? [];
+$siteArray = $_POST['site'] ?? [];
 
-            $order_stmt->bind_param("issids", $user_id, $user_name, $item['description'], $item['quantity'], $item['rate'], $item['item_type']);
-            $order_stmt->execute();
-        }
-
+        foreach ($cartItems as $index => $item) {
+          $item_remark = $remarksArray[$index] ?? '';
+          $item_site = $siteArray[$index] ?? 'HO-MAIN';
+      
+          // Save to INVOICEITEMS
+          $item_stmt = $conn->prepare("INSERT INTO INVOICEITEMS (invoice_id, item_name, quantity, price, amount, remarks, site) VALUES (?, ?, ?, ?, ?, ?, ?)");
+          $item_stmt->bind_param("isiddss", $invoice_id, $item['description'], $item['quantity'], $item['rate'], $item['amount'], $item_remark, $item_site);
+          $item_stmt->execute();
+      
+          // Save to ORDERS
+          $order_stmt = $conn->prepare("INSERT INTO ORDERS (user_id, user_name, item_name, quantity, price, item_type, remarks, site) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+          $order_stmt->bind_param("issidsss", $user_id, $user_name, $item['description'], $item['quantity'], $item['rate'], $item['item_type'], $item_remark, $item_site);
+          $order_stmt->execute();
+      }
         $clear_cart_sql = "DELETE FROM CART WHERE user_id = ?";
         $clear_cart_stmt = $conn->prepare($clear_cart_sql);
         $clear_cart_stmt->bind_param("i", $user_id);
