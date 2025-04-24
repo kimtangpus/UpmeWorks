@@ -8,7 +8,7 @@ if (!isset($_GET['invoice_id'])) {
 
 $invoice_id = $_GET['invoice_id'];
 
-// Join INVOICE with USERS to fetch TIN and Business Style
+
 $sql_invoice = "
     SELECT i.*, u.tin, u.business_style 
     FROM INVOICE i 
@@ -177,7 +177,7 @@ $items = $stmt_items->get_result();
         </div>
     </div>
 
-    <!-- Action Buttons -->
+    
     <div class="action-buttons no-print">
         <button onclick="window.print()" class="btn btn-dark me-2">Print Invoice</button>
         <a href="index.php" class="btn btn-primary">Back to Home</a>

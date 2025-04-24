@@ -168,7 +168,7 @@ $siteArray = $_POST['site'] ?? [];
   <h5 class="mb-3"><strong>Sales Invoice</strong> <span class="text-primary"></span></h5>
 
     <form action="cart.php" method="POST">
-      <!-- Bill To and Ship To -->
+      
       <div class="row g-3">
         <div class="col-md-6">
           <h6>Bill To Information</h6>
@@ -245,7 +245,7 @@ $siteArray = $_POST['site'] ?? [];
         </div>
       </div>
 
-      <!-- Item Table -->
+      
       <div class="table-responsive my-4">
         <table class="table table-bordered text-center align-middle">
           <thead class="table-light">
