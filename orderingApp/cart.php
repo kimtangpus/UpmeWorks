@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $vat = isset($_POST['tax_inclusive']) ? 1 : 0;
       $withholding = isset($_POST['withholding']) ? 1 : 0;
   
-      // New fields
+      
       $po_ref_no = $_POST['po_ref_no'] ?? '';
       $ship_to = $_POST['ship_to'] ?? '';
       $ship_address = $_POST['ship_address'] ?? '';
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $salesman = $_POST['salesman'] ?? '';
       $pricelist = $_POST['pricelist'] ?? '';
   
-      // Existing fields
+     
       $invoice_date = $_POST['doc_date'] ?? date('Y-m-d');
       $due_date = $_POST['due_date'] ?? null;
       $reference_no = $_POST['ref_no'] ?? '';
@@ -61,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $user_name_posted = $_POST['bill_to'] ?? $user_name;
       
   
-      // Calculations...
       $subtotal = 0;
       $cartItems = [];
       $item_query = $conn->prepare($sql);
@@ -84,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $withholdingAmount = $withholding ? $subtotal * 0.02 : 0;
       $grandTotal = $subtotal + $vatAmount - $discount - $withholdingAmount;
   
-      // Update INSERT query
+      
       $invoice_sql = "INSERT INTO INVOICE (user_id, user_name, invoice_date, due_date, reference_no, address, contact_no, remarks, discount, vat, withholding, subtotal, grand_total, po_ref_no, ship_to, ship_address, credit_term, delivery_date, salesman, pricelist, created_at)
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
   
@@ -129,12 +128,12 @@ $siteArray = $_POST['site'] ?? [];
           $item_remark = $remarksArray[$index] ?? '';
           $item_site = $siteArray[$index] ?? 'HO-MAIN';
       
-          // Save to INVOICEITEMS
+          
           $item_stmt = $conn->prepare("INSERT INTO INVOICEITEMS (invoice_id, item_name, quantity, price, amount, remarks, site) VALUES (?, ?, ?, ?, ?, ?, ?)");
           $item_stmt->bind_param("isiddss", $invoice_id, $item['description'], $item['quantity'], $item['rate'], $item['amount'], $item_remark, $item_site);
           $item_stmt->execute();
       
-          // Save to ORDERS
+      
           $order_stmt = $conn->prepare("INSERT INTO ORDERS (user_id, user_name, item_name, quantity, price, item_type, remarks, site) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
           $order_stmt->bind_param("issidsss", $user_id, $user_name, $item['description'], $item['quantity'], $item['rate'], $item['item_type'], $item_remark, $item_site);
           $order_stmt->execute();
@@ -193,6 +192,7 @@ $siteArray = $_POST['site'] ?? [];
               <label class="form-label">Pricelist</label>
               <select class="form-select" name="pricelist">
                 <option value="COD">COD</option>
+                <option value="Debit">DEBIT</option>
               </select>
             </div>
           </div>
@@ -262,65 +262,111 @@ $siteArray = $_POST['site'] ?? [];
             </tr>
           </thead>
           <tbody>
-            <?php
-            $total = 0;
-            while ($row = $result->fetch_assoc()):
-              $amount = $row['price'] * $row['quantity'];
-              $total += $amount;
-            ?>
-            <tr>
-              <td><?php echo $row['product_id']; ?></td>
-              <td><?php echo htmlspecialchars($row['item_name']); ?></td>
-              <td>PC</td>
-              <td><?php echo $row['quantity']; ?></td>
-              <td><?php echo number_format($row['price'], 2); ?></td>
-              <td><?php echo number_format($amount, 2); ?></td>
-              <td><input type="text" class="form-control form-control-sm" name="remarks[]"></td>
-              <td>
-                <select class="form-select form-select-sm" name="site[]">
-                  <option>HO-MAIN</option>
-                </select>
-              </td>
-              <td>
-                <form method="POST" action="cart.php">
-                  <input type="hidden" name="cart_id" value="<?php echo $row['cart_id']; ?>">
-                  <button type="submit" name="delete" class="btn btn-sm btn-outline-danger">🗑</button>
-                </form>
-              </td>
-            </tr>
-            <?php endwhile; ?>
-          </tbody>
-        </table>
-        <a href="index.php"><button type="button" class="btn btn-sm btn-outline-secondary">+</button></a>
+          <?php
+$total = 0;
+$total_qty = 0;
+
+while ($row = $result->fetch_assoc()):
+  $amount = $row['price'] * $row['quantity'];
+  $total += $amount;
+  $total_qty += $row['quantity'];
+?>
+<tr>
+  <td><?php echo $row['product_id']; ?></td>
+  <td><?php echo htmlspecialchars($row['item_name']); ?></td>
+  <td>PC</td>
+  <td><?php echo $row['quantity']; ?></td>
+  <td><?php echo number_format($row['price'], 2); ?></td>
+  <td><?php echo number_format($amount, 2); ?></td>
+  <td><input type="text" class="form-control form-control-sm" name="remarks[]"></td>
+  <td>
+    <select class="form-select form-select-sm" name="site[]">
+      <option>HO-MAIN</option>
+    </select>
+  </td>
+  <td>
+    <form method="POST" action="cart.php">
+      <input type="hidden" name="cart_id" value="<?php echo $row['cart_id']; ?>">
+      <button type="submit" name="delete" class="btn btn-sm btn-outline-danger">🗑</button>
+    </form>
+  </td>
+</tr>
+<?php endwhile; ?>
+</tbody>
+</table>
+<a href="index.php"><button type="button" class="btn btn-sm btn-outline-secondary">+</button></a>
+</div>
+
+
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="form-label">Particulars</label>
+    <textarea class="form-control" name="particulars" rows="2"></textarea>
+  </div>
+  <div class="col-md-6">
+    <div class="bg-light border rounded p-3">
+      <div class="d-flex justify-content-between mb-2">
+        <span>Total Qty:</span>
+        <input type="text" class="form-control form-control-sm w-50 text-end" name="total_qty" value="<?php echo $total_qty; ?>" readonly>
       </div>
 
-      <!-- Particulars and Totals -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label">Particulars</label>
-          <textarea class="form-control" name="particulars" rows="2"></textarea>
-        </div>
-        <div class="col-md-6">
-          <div class="bg-light border rounded p-3">
-            <div class="d-flex justify-content-between mb-2">
-              <span>Total Qty:</span>
-              <input type="text" class="form-control form-control-sm w-50 text-end" name="total_qty" value="120.00">
-            </div>
-            <div class="form-check mb-2">
-              <input type="checkbox" class="form-check-input" id="tax_inclusive" name="tax_inclusive">
-              <label class="form-check-label" for="tax_inclusive">Tax Inclusive?</label>
-            </div>
-            <div class="d-flex justify-content-between mb-1"><span>Sub-Total:</span><span>₱<?php echo number_format($total, 2); ?></span></div>
-            <div class="d-flex justify-content-between mb-1"><span>Discounts:</span><input type="text" class="form-control form-control-sm w-50 text-end" name="discounts" value="0.00"></div>
-            <div class="d-flex justify-content-between mb-1"><span>Other Charges:</span><input type="text" class="form-control form-control-sm w-50 text-end" name="other_charges" value="0.00"></div>
-            <div class="d-flex justify-content-between mb-1"><span>VAT (12%):</span><input type="text" class="form-control form-control-sm w-50 text-end" name="vat" value="0.00"></div>
-            <div class="d-flex justify-content-between mb-1"><span>Net Of VAT:</span><input type="text" class="form-control form-control-sm w-50 text-end" name="net_vat" value="0.00"></div>
-            <div class="d-flex justify-content-between fw-bold mt-2"><span>Net Amount:</span><span>₱<?php echo number_format($total, 2); ?></span></div>
-          </div>
-        </div>
+      <?php
+      $discounts = 0.00;
+      $other_charges = 0.00;
+      $vat_rate = 0.12;
+
+      $vat = 0;
+      $net_vat = 0;
+      $subtotal = $total;
+
+      
+      if (isset($_POST['tax_inclusive'])) {
+          $net_vat = $total / (1 + $vat_rate);
+          $vat = $total - $net_vat;
+      } else {
+          $vat = $total * $vat_rate;
+          $net_vat = $total;
+          $subtotal += $vat;
+      }
+
+      $net_amount = $subtotal - $discounts + $other_charges;
+      ?>
+
+      <div class="form-check mb-2">
+        <input type="checkbox" class="form-check-input" id="tax_inclusive" name="tax_inclusive">
+        <label class="form-check-label" for="tax_inclusive">Tax Inclusive?</label>
       </div>
 
-      <!-- Footer Buttons -->
+      <div class="d-flex justify-content-between mb-1">
+        <span>Sub-Total:</span>
+        <span>₱<?php echo number_format($total, 2); ?></span>
+      </div>
+      <div class="d-flex justify-content-between mb-1">
+        <span>Discounts:</span>
+        <input type="text" class="form-control form-control-sm w-50 text-end" name="discounts" value="<?php echo number_format($discounts, 2); ?>">
+      </div>
+      <div class="d-flex justify-content-between mb-1">
+        <span>Other Charges:</span>
+        <input type="text" class="form-control form-control-sm w-50 text-end" name="other_charges" value="<?php echo number_format($other_charges, 2); ?>">
+      </div>
+      <div class="d-flex justify-content-between mb-1">
+        <span>VAT (12%):</span>
+        <input type="text" class="form-control form-control-sm w-50 text-end" name="vat" value="<?php echo number_format($vat, 2); ?>" readonly>
+      </div>
+      <div class="d-flex justify-content-between mb-1">
+        <span>Net Of VAT:</span>
+        <input type="text" class="form-control form-control-sm w-50 text-end" name="net_vat" value="<?php echo number_format($net_vat, 2); ?>" readonly>
+      </div>
+      <div class="d-flex justify-content-between fw-bold mt-2">
+        <span>Net Amount:</span>
+        <span>₱<?php echo number_format($net_amount, 2); ?></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      
       <div class="d-flex justify-content-between mt-4">
         <div>
           <span class="me-3"><strong>Status:</strong> Open</span>
