@@ -11,12 +11,12 @@ if (isset($_GET['search'])) {
     $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
 }
 date_default_timezone_set('Asia/Manila');
-$currentDate = date('l, F j, Y '); // Format: Year-Month-Day Hour:Minute:Second
-$currentTime = time(); // Get the current timestamp
+$currentDate = date('l, F j, Y '); 
+$currentTime = time(); 
 $currentTimeFormatted = date('g:i A', $currentTime);
 
-// Modify the query to search by product name
-$query = "SELECT * FROM products WHERE name LIKE '%$searchTerm%'"; // Replace 'products' with your actual table name
+
+$query = "SELECT * FROM products WHERE name LIKE '%$searchTerm%'"; 
 $result = mysqli_query($conn, $query);
 ?>
 
@@ -26,123 +26,14 @@ $result = mysqli_query($conn, $query);
   <meta charset="UTF-8">
   <title>POS System</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin-top: 10px;
-    }
-
-    /* Sidebar Styles */
-    .sidebar {
-      background-color: #f8f9fa;
-      min-height: 100vh;
-      padding: 10px;
-    }
-
-    /* Product Card Styling */
-    .product-card {
-      text-align: center;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 10px;
-      margin: 5px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      height: 250px; /* Increased height for product cards */
-      font-size: auto;
-    }
-    .product-card:hover {
-      background-color: #f1f1f1;
-    }
-    .product-img {
-      width: 100%;
-      height: 150px; /* Adjusted height for images */
-      object-fit: contain;
-      border-bottom: 1px solid #ddd;
-    }
-
-    /* Right Panel (Order Summary) Styles */
-    .right-panel {
-      background-color: #f4f4f4;
-      height: 100vh;
-      padding: 20px;
-      border-left: 2px solid #ddd;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between; /* Ensure buttons are at the bottom */
-    }
-    .checkout-btn {
-      height: 60px;
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-    .total-display {
-      font-size: 48px;
-      color: green;
-      margin: 20px 0;
-    }
-
-    /* Category Buttons Styles */
-    .category-buttons {
-      overflow-x: auto;
-      white-space: nowrap;
-      margin-bottom: 15px;
-    }
-    .category-buttons button {
-      margin-right: 10px;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
-
-    /* Product Grid Styles */
-    .product-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-    .product-card-container {
-      flex: 1 0 21%; /* Flex basis for 4 items per row */
-      margin: 15px 0;
-      padding: 10px;
-    }
-
-    /* Search Bar and Header */
-    .search-bar {
-      margin-bottom: 20px;
-    }
-
-    .search-bar input {
-      width: 250px;
-    }
-
-    /* Responsive Design Adjustments */
-    @media (max-width: 992px) {
-      .product-card-container {
-        flex: 1 0 45%; /* Two items per row on medium screens */
-      }
-    }
-
-    @media (max-width: 576px) {
-      .product-card-container {
-        flex: 1 0 100%; /* One item per row on small screens */
-      }
-
-      .sidebar {
-        width: 100%; /* Sidebar takes full width on small screens */
-        margin-bottom: 15px;
-      }
-
-      .right-panel {
-        width: 100%; /* Right panel takes full width on small screens */
-        margin-top: 15px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/posstyles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8d7xj1z5l5e5e5e5e5e5e5e5e5e5e5e5e5" crossorigin="anonymous"> 
+  
 </head>
 <body>
 <div class="container-fluid">
   <div class="row">
-    <!-- Sidebar -->
+    
     <div class="col-2 d-flex flex-column justify-content-between sidebar">
       <div>
         <button class="btn btn-outline-primary w-100 mb-2">Customers</button>
@@ -156,11 +47,11 @@ $result = mysqli_query($conn, $query);
       </div>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="col-7">
       <div class="search-bar d-flex justify-content-between align-items-center mb-3">
         <h4>Categories</h4>
-        <!-- Form for searching products -->
+       
         <form method="GET" action="" class="d-flex">
           <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search"
             value="<?php echo htmlspecialchars($searchTerm); ?>">
@@ -168,7 +59,7 @@ $result = mysqli_query($conn, $query);
         </form>
       </div>
 
-      <!-- Category Buttons -->
+     
       <div class="category-buttons d-flex flex-wrap mb-3">
         <a href="index.php"><button class="btn btn-outline-secondary">Breakfast</button></a>
         <a href="index.php"><button class="btn btn-outline-secondary">Beverages</button></a>
@@ -183,10 +74,10 @@ $result = mysqli_query($conn, $query);
         <a href="index.html"><button class="btn btn-outline-secondary">Group 11</button></a>
       </div>
 
-      <!-- Product Cards -->
+     
       <div class="product-grid">
         <?php
-        // Display products dynamically
+        
         if (mysqli_num_rows($result) > 0):
           while($product = mysqli_fetch_assoc($result)):
         ?>
@@ -208,7 +99,7 @@ $result = mysqli_query($conn, $query);
       </div>
     </div>
 
-    <!-- Order Summary -->
+    
     <div class="col-3 right-panel">
       <div>
         <div class="d-flex justify-content-between">
@@ -220,23 +111,26 @@ $result = mysqli_query($conn, $query);
           <div><?php echo $currentTimeFormatted;?></div>
         </div>
         <div class="total-display text-center my-3">0.00</div>
-        <table class="table table-sm table-bordered">
-          <thead>
-          <tr>
-            <th>Particular</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Disc</th>
-            <th>Amount</th>
-          </tr>
-          </thead>
-          <tbody>
-          <!-- Order items will go here -->
-          </tbody>
-        </table>
+        <div class="table-responsive">
+  <table class="table table-sm table-bordered">
+    <thead>
+      <tr>
+        <th>Particular</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Disc</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+  </table>
+</div>
+
       </div>
       
-      <!-- Buttons at the bottom -->
+      
       <div class="mt-auto">
         <button class="btn btn-warning w-100 mb-2 checkout-btn">Hold Order</button>
         <button class="btn btn-success w-100 checkout-btn">Checkout</button>
