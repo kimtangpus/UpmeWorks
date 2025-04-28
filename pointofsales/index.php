@@ -36,7 +36,7 @@ $result = mysqli_query($conn, $query);
     
     <div class="col-2 d-flex flex-column justify-content-between sidebar">
       <div>
-        <button class="btn btn-outline-primary w-100 mb-2">Customers</button>
+        <a href="customers.php"><button class="btn btn-outline-primary w-100 mb-2">Customers</button></a>
         <button class="btn btn-outline-primary w-100 mb-2">Orders</button>
         <button class="btn btn-outline-primary w-100 mb-2">Cashier</button>
         <button class="btn btn-outline-primary w-100 mb-2">Reports</button>
