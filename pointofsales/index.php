@@ -7,41 +7,95 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+// ADD PRODUCT
 if (isset($_POST['add_product'])) {
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $price = floatval($_POST['price']);
-    $image_url = mysqli_real_escape_string($conn, $_POST['image_url']);
-
-    $insertQuery = "INSERT INTO products (name, price, image_url) VALUES ('$name', $price, '$image_url')";
-    mysqli_query($conn, $insertQuery);
+    if (!empty($_POST['name']) && is_numeric($_POST['price']) && !empty($_POST['image_url']) && !empty($_POST['category'])) {
+        $stmt = $conn->prepare("INSERT INTO products (name, price, image_url, category) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sdss", $_POST['name'], $_POST['price'], $_POST['image_url'], $_POST['category']);
+        $stmt->execute();
+        $stmt->close();
+    }
     header('Location: index.php');
     exit();
 }
 
+// DELETE PRODUCT
+if (isset($_POST['delete_product'])) {
+    $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
+    $stmt->bind_param("i", $_POST['product_id']);
+    $stmt->execute();
+    $stmt->close();
+    header('Location: index.php');
+    exit();
+}
+
+// ADD CATEGORY
+if (isset($_POST['add_category']) && !empty($_POST['category_name'])) {
+    $stmt = $conn->prepare("INSERT INTO categories (name) VALUES (?)");
+    $stmt->bind_param("s", $_POST['category_name']);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: index.php");
+    exit();
+}
+
+// EDIT CATEGORY
+if (isset($_POST['edit_category'])) {
+    $stmt = $conn->prepare("UPDATE categories SET name = ? WHERE id = ?");
+    $stmt->bind_param("si", $_POST['category_name'], $_POST['category_id']);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: index.php");
+    exit();
+}
+
+// DELETE CATEGORY
+if (isset($_POST['delete_category'])) {
+    $stmt = $conn->prepare("DELETE FROM categories WHERE id = ?");
+    $stmt->bind_param("i", $_POST['category_id']);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: index.php");
+    exit();
+}
+
+// EDIT PRODUCT
 if (isset($_POST['edit_product'])) {
-    $product_id = intval($_POST['product_id']);
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $price = floatval($_POST['price']);
-    $image_url = mysqli_real_escape_string($conn, $_POST['image_url']);
-
-    $updateQuery = "UPDATE products SET name='$name', price=$price, image_url='$image_url' WHERE id=$product_id";
-    mysqli_query($conn, $updateQuery);
+    if (!empty($_POST['name']) && is_numeric($_POST['price']) && !empty($_POST['image_url']) && !empty($_POST['category'])) {
+        $stmt = $conn->prepare("UPDATE products SET name = ?, price = ?, image_url = ?, category = ? WHERE id = ?");
+        $stmt->bind_param("sdssi", $_POST['name'], $_POST['price'], $_POST['image_url'], $_POST['category'], $_POST['product_id']);
+        $stmt->execute();
+        $stmt->close();
+    }
     header('Location: index.php');
     exit();
 }
 
-$searchTerm = ''; 
-if (isset($_GET['search'])) {
-    $searchTerm = mysqli_real_escape_string($conn, $_GET['search']);
+// SEARCH AND FILTER
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$categoryFilter = isset($_GET['category']) ? $_GET['category'] : '';
+
+$searchQuery = "SELECT * FROM products WHERE name LIKE ?";
+$params = ["%{$searchTerm}%"];
+$types = "s";
+
+if ($categoryFilter !== '') {
+    $searchQuery .= " AND category = ?";
+    $params[] = $categoryFilter;
+    $types .= "s";
 }
+
+$stmt = $conn->prepare($searchQuery);
+$stmt->bind_param($types, ...$params);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
 
 date_default_timezone_set('Asia/Manila');
 $currentDate = date('l, F j, Y'); 
 $currentTimeFormatted = date('g:i A');
-
-$query = "SELECT * FROM products WHERE name LIKE '%$searchTerm%'";
-$result = mysqli_query($conn, $query);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +112,7 @@ $result = mysqli_query($conn, $query);
         
         <div class="col-2 d-flex flex-column justify-content-between sidebar">
             <div>
-                <a href="#" class="btn btn-outline-primary w-100 mb-2">Customers</a>
+                <a href="customers.php" class="btn btn-outline-primary w-100 mb-2">Customers</a>
                 <button class="btn btn-outline-primary w-100 mb-2">Orders</button>
                 <button class="btn btn-outline-primary w-100 mb-2">Cashier</button>
                 <button class="btn btn-outline-primary w-100 mb-2">Reports</button>
@@ -74,20 +128,64 @@ $result = mysqli_query($conn, $query);
                 <h4>Categories</h4>
             </div>
 
+            <div class="category-buttons d-flex flex-wrap mb-3">
+    <?php
+    $categoryQuery = mysqli_query($conn, "SELECT * FROM categories ORDER BY name");
+    while ($cat = mysqli_fetch_assoc($categoryQuery)) {
+        $activeClass = ($cat['name'] == $categoryFilter) ? 'btn-primary' : 'btn-outline-secondary';
+        echo "<div class='me-2 mb-2 d-flex align-items-center'>";
+        echo "<a href='index.php?category=" . urlencode($cat['name']) . "' class='btn $activeClass me-1'>{$cat['name']}</a>";
+        echo "<button class='btn btn-sm btn-warning me-1' data-bs-toggle='modal' data-bs-target='#editCategoryModal{$cat['id']}'>✏️</button>";
+        echo "<form method='POST' onsubmit=\"return confirm('Delete this category?');\">
+                <input type='hidden' name='category_id' value='{$cat['id']}'>
+                <button type='submit' name='delete_category' class='btn btn-sm btn-danger'>🗑️</button>
+              </form>";
+        echo "</div>";
+
+        // Edit Modal
+        echo "
+        <div class='modal fade' id='editCategoryModal{$cat['id']}' tabindex='-1'>
+            <div class='modal-dialog'>
+                <form method='POST' class='modal-content'>
+                    <div class='modal-header'><h5>Edit Category</h5><button type='button' class='btn-close' data-bs-dismiss='modal'></button></div>
+                    <div class='modal-body'>
+                        <input type='hidden' name='category_id' value='{$cat['id']}'>
+                        <input type='text' name='category_name' value='" . htmlspecialchars($cat['name']) . "' class='form-control' required>
+                    </div>
+                    <div class='modal-footer'>
+                        <button type='submit' name='edit_category' class='btn btn-primary'>Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>";
+    }
+    ?>
+    <button class="btn btn-success me-2 mb-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">+ Add Category</button>
+</div>
+
+<!-- Add Category -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="POST" class="modal-content">
+            <div class="modal-header"><h5>Add Category</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="text" name="category_name" placeholder="Category Name" class="form-control" required>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="add_category" class="btn btn-success">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+            <!-- Search -->
             <form method="GET" class="d-flex mb-3">
                 <input class="form-control me-2" type="search" name="search" placeholder="Search" value="<?php echo htmlspecialchars($searchTerm); ?>">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
-
-         
-            <div class="category-buttons d-flex flex-wrap mb-3">
-                <?php
-                $categories = ['Breakfast', 'Beverages', 'Pasta', 'Sushi', 'Side Dish', 'Rice Bowl', 'Meals', 'Appetizers', 'Group 9', 'Group 10', 'Group 11'];
-                foreach ($categories as $category) {
-                    echo "<a href='index.php' class='btn btn-outline-secondary me-2 mb-2'>{$category}</a>";
-                }
-                ?>
-            </div>
 
             <div class="product-grid d-flex flex-wrap gap-3">
                 <?php if (mysqli_num_rows($result) > 0): ?>
@@ -98,12 +196,21 @@ $result = mysqli_query($conn, $query);
                                 <div class="product-card-body">
                                     <h5 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h5>
                                     <p class="product-price">₱<?php echo number_format($product['price'], 2); ?></p>
+                                    <div class="d-flex justify-content-center gap-2 mx-auto">
+                                       
                                     <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['id']; ?>">Edit</button>
+                                    <form method="POST" action="index.php" onsubmit="return confirm('Delete this product?');">
+  <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+  <button type="submit" name="delete_product" class="btn btn-sm btn-danger mt-2">Delete</button>
+</form>
+                    </div>
+
+
                                 </div>
                             </div>
                         </div>
 
-                      
+                        <!-- Edit Product -->
                         <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" aria-labelledby="editProductModalLabel<?php echo $product['id']; ?>" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -126,6 +233,23 @@ $result = mysqli_query($conn, $query);
                                                 <label for="image_url<?php echo $product['id']; ?>" class="form-label">Image URL</label>
                                                 <input type="text" id="image_url<?php echo $product['id']; ?>" name="image_url" class="form-control" value="<?php echo htmlspecialchars($product['image_url']); ?>">
                                             </div>
+                                            <div class="mb-3">
+    <label for="category<?php echo $product['id']; ?>" class="form-label">Category</label>
+    <select id="category<?php echo $product['id']; ?>" name="category" class="form-select">
+        <?php
+    
+        $categoryQuery = "SELECT name FROM categories";
+        $categoryResult = mysqli_query($conn, $categoryQuery);
+
+        while ($row = mysqli_fetch_assoc($categoryResult)) {
+            $categoryName = $row['name'];
+            $selected = ($product['category'] == $categoryName) ? 'selected' : '';
+            echo "<option value='$categoryName' $selected>$categoryName</option>";
+        }
+        ?>
+    </select>
+</div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" name="edit_product" class="btn btn-primary">Save Changes</button>
@@ -147,7 +271,6 @@ $result = mysqli_query($conn, $query);
             </div>
         </div>
 
-        
         <div class="col-3 right-panel d-flex flex-column">
             <div>
                 <div class="d-flex justify-content-between">
@@ -207,11 +330,27 @@ $result = mysqli_query($conn, $query);
                     </div>
                     <div class="mb-3">
                         <label for="addImageUrl" class="form-label">Image URL</label>
-                        <input type="text" id="addImageUrl" name="image_url" class="form-control">
+                        <input type="text" id="addImageUrl" name="image_url" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addCategory" class="form-label">Category</label>
+                        <select id="addCategory" name="category" class="form-select">
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Beverages">Beverages</option>
+                            <option value="Pasta">Pasta</option>
+                            <option value="Sushi">Sushi</option>
+                            <option value="Side Dish">Side Dish</option>
+                            <option value="Rice Bowl">Rice Bowl</option>
+                            <option value="Meals">Meals</option>
+                            <option value="Appetizers">Appetizers</option>
+                            <option value="Group 9">Group 9</option>
+                            <option value="Group 10">Group 10</option>
+                            <option value="Group 11">Group 11</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="add_product" class="btn btn-success">Add Product</button>
+                    <button type="submit" name="add_product" class="btn btn-primary">Add Product</button>
                 </div>
             </form>
         </div>
@@ -219,6 +358,5 @@ $result = mysqli_query($conn, $query);
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
