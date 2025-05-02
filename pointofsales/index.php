@@ -116,6 +116,7 @@ $currentTimeFormatted = date('g:i A');
                 <button class="btn btn-outline-primary w-100 mb-2">Orders</button>
                 <button class="btn btn-outline-primary w-100 mb-2">Cashier</button>
                 <button class="btn btn-outline-primary w-100 mb-2">Reports</button>
+                <a href="discounts.php" class="btn btn-outline-primary w-100 mb-2">Discounts</a>
             </div>
             <div>
                 <button class="btn btn-outline-secondary w-100 mt-5">Settings</button>
