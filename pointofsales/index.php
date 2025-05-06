@@ -94,6 +94,7 @@ $stmt->close();
 date_default_timezone_set('Asia/Manila');
 $currentDate = date('l, F j, Y'); 
 $currentTimeFormatted = date('g:i A');
+
 ?>
 
 
@@ -105,6 +106,9 @@ $currentTimeFormatted = date('g:i A');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/posstyles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
 <div class="container-fluid">
@@ -192,24 +196,27 @@ $currentTimeFormatted = date('g:i A');
                 <?php if (mysqli_num_rows($result) > 0): ?>
                     <?php while($product = mysqli_fetch_assoc($result)): ?>
                         <div class="product-card-container">
-                            <div class="product-card text-center p-2">
-                                <img src="<?php echo htmlspecialchars($product['image_url']); ?>" class="product-img" alt="Product Image">
-                                <div class="product-card-body">
-                                    <h5 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h5>
-                                    <p class="product-price">₱<?php echo number_format($product['price'], 2); ?></p>
-                                    <div class="d-flex justify-content-center gap-2 mx-auto">
-                                       
-                                    <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['id']; ?>">Edit</button>
-                                    <form method="POST" action="index.php" onsubmit="return confirm('Delete this product?');">
-  <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-  <button type="submit" name="delete_product" class="btn btn-sm btn-danger mt-2">Delete</button>
-</form>
-                    </div>
+    <div class="product-card text-center p-2 add-to-order"
+         data-name="<?php echo htmlspecialchars($product['name']); ?>"
+         data-price="<?php echo $product['price']; ?>">
+         
+        <img src="<?php echo htmlspecialchars($product['image_url']); ?>" class="product-img" alt="Product Image">
+        
+        <div class="product-card-body">
+            <h5 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h5>
+            <p class="product-price">₱<?php echo number_format($product['price'], 2); ?></p>
 
-
-                                </div>
-                            </div>
-                        </div>
+            <div class="d-flex justify-content-center gap-2 mx-auto">
+                <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#editProductModal<?php echo $product['id']; ?>">Edit</button>
+                
+                <form method="POST" action="index.php" onsubmit="return confirm('Delete this product?');">
+                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                    <button type="submit" name="delete_product" class="btn btn-sm btn-danger mt-2">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
                         <!-- Edit Product -->
                         <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" aria-labelledby="editProductModalLabel<?php echo $product['id']; ?>" aria-hidden="true">
@@ -272,7 +279,7 @@ $currentTimeFormatted = date('g:i A');
             </div>
         </div>
 
-        <div class="col-3 right-panel d-flex flex-column">
+       <div class="col-3 right-panel d-flex flex-column">
             <div>
                 <div class="d-flex justify-content-between">
                     <div><strong>Order No:</strong></div>
@@ -359,5 +366,52 @@ $currentTimeFormatted = date('g:i A');
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let orderItems = [];
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const orderTableBody = document.querySelector("table tbody");
+        const totalDisplay = document.querySelector(".total-display");
+
+        function updateOrderDisplay() {
+            orderTableBody.innerHTML = "";
+            let total = 0;
+
+            orderItems.forEach((item, index) => {
+                const amount = (item.price * item.qty) - item.discount;
+                total += amount;
+
+                orderTableBody.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>₱${item.price.toFixed(2)}</td>
+                        <td>${item.qty}</td>
+                        <td>₱${item.discount.toFixed(2)}</td>
+                        <td>₱${amount.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            totalDisplay.textContent = "₱" + total.toFixed(2);
+        }
+
+        document.querySelectorAll(".add-to-order").forEach(card => {
+            card.addEventListener("click", function () {
+                const name = this.getAttribute("data-name");
+                const price = parseFloat(this.getAttribute("data-price"));
+
+                const existingItem = orderItems.find(item => item.name === name);
+                if (existingItem) {
+                    existingItem.qty += 1;
+                } else {
+                    orderItems.push({ name, price, qty: 1, discount: 0 });
+                }
+
+                updateOrderDisplay();
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
