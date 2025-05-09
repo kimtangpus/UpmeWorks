@@ -12,6 +12,12 @@ date_default_timezone_set('Asia/Manila');
 $currentDate = date('l, F j, Y');
 $currentTimeFormatted = date('g:i A');
 
+// Generate Order Number
+$orderQuery = mysqli_query($conn, "SELECT MAX(id) AS last_id FROM orders");
+$orderRow = mysqli_fetch_assoc($orderQuery);
+$lastOrderId = $orderRow['last_id'] ?? 0;
+$newOrderNumber = 'ORD-' . str_pad($lastOrderId + 1, 6, '0', STR_PAD_LEFT);
+
 
 $editCustomer = null;
 if (isset($_GET['edit'])) {

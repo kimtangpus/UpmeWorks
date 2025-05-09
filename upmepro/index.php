@@ -27,7 +27,7 @@ if (!isset($_SESSION['username'])) {
         <div class="col-md-2 sidebar">
         <div class="py-3 px-4 d-flex justify-content-center">
         <img src="logos/UPmePRO_Revised-removebg-preview.png" alt="logo" class="img-fluid" style="width: 150px;">
-</div>
+        </div>
 
           
             <div>

@@ -31,7 +31,7 @@ $top_customers_result = $conn->query($top_customers_query);
             <div class="col-3 col-md-2 sidebar">
                 <h2>Dashboard</h2>
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="index.php">Sales</a>
+                    <a class="nav-link active" style="font-size: 25px;" href="index.php">Sales</a>
                 </nav>
             </div>
 

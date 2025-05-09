@@ -1,5 +1,6 @@
 <?php
 require 'connect.php'; 
+require 'getdiscount.php'; 
 session_start();
 
 if (!isset($_SESSION['username'])) {
@@ -7,8 +8,7 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-$searchTerm = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
-
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
 $editDiscount = null;
 if (isset($_GET['edit'])) {
@@ -41,17 +41,7 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
-
-$query = "SELECT d.*, 
-          CASE d.discount_type_id 
-            WHEN 1 THEN 'Percentage' 
-            WHEN 2 THEN 'Amount' 
-            ELSE 'Unknown' 
-          END AS discount_type 
-          FROM discounts d 
-          WHERE d.name LIKE '%$searchTerm%' 
-          ORDER BY d.name ASC";
-$result = mysqli_query($conn, $query);
+$discounts = getDiscounts($searchTerm);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,19 +76,18 @@ $result = mysqli_query($conn, $query);
       </tr>
     </thead>
     <tbody>
-      <?php while($row = mysqli_fetch_assoc($result)): ?>
+      <?php foreach ($discounts as $row): ?>
       <tr>
         <td><?php echo htmlspecialchars($row['name']); ?></td>
         <td><?php echo htmlspecialchars($row['discount_type']); ?></td>
         <td>
-  <?php 
-    echo htmlspecialchars($row['value']); 
-    if ($row['discount_type_id'] == 1) {
-      echo '%';
-    }
-  ?>
-</td>
-
+          <?php 
+            echo htmlspecialchars($row['value']); 
+            if ($row['discount_type_id'] == 1) {
+              echo '%';
+            }
+          ?>
+        </td>
         <td class="text-center">
           <div class="d-flex justify-content-center gap-2">
             <a href="discounts.php?edit=<?php echo $row['id']; ?>" class="btn btn-sm btn-warning">Edit</a>
@@ -106,7 +95,7 @@ $result = mysqli_query($conn, $query);
           </div>
         </td>
       </tr>
-      <?php endwhile; ?>
+      <?php endforeach; ?>
     </tbody>
   </table>
 
