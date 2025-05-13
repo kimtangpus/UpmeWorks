@@ -174,11 +174,21 @@ $newOrderNumber = $_SESSION['order_number'];
                 <a href="customers.php" class="btn btn-outline-primary w-100 mb-2">Customers</a>
                 <a href="orders.php"><button class="btn btn-outline-primary w-100 mb-2">Orders</button></a>
                 <a href="cashier.php"><button class="btn btn-outline-primary w-100 mb-2">Cashier</button></a>
-                <button class="btn btn-outline-primary w-100 mb-2">Reports</button>
+                <a href="reports.php"><button class="btn btn-outline-primary w-100 mb-2">Reports</button></a>
                 <a href="discounts.php" class="btn btn-outline-primary w-100 mb-2">Discounts</a>
             </div>
             <div>
-                <button class="btn btn-outline-secondary w-100 mt-5">Settings</button>
+                <div class="dropdown w-100 mt-5">
+    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Settings
+    </button>
+    <ul class="dropdown-menu w-100">
+        <li><a class="dropdown-item" href="storage.php">Storage Areas</a></li>
+        <li><a class="dropdown-item" href="charges.php">Other Charges</a></li>
+        <li><a class="dropdown-item" href="config.php">Store Configuration</a></li>
+    </ul>
+</div>
+
                 <a href="logout.php" class="btn btn-outline-danger w-100 mt-2">Logout</a>
             </div>
         </div>
@@ -454,3 +464,5 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
