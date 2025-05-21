@@ -5,11 +5,25 @@
     }
 
     
-    .sidebar {
-      background-color: #f8f9fa;
-      min-height: 100vh;
-      padding: 10px;
-    }
+   .sidebar {
+    height: 100vh; 
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+    
+}
+
+.sidebar .nav-links {
+    flex-grow: 1;
+}
+
+.sidebar .bottom-controls {
+    margin-top: auto;
+}
+
 
     
     .product-card {
@@ -111,4 +125,6 @@
         margin-top: 15px;
       }
     }
+
+    
   

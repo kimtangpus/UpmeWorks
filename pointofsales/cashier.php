@@ -131,14 +131,12 @@ $result = mysqli_query($conn, $query);
                     <label for="active" class="form-check-label">Active</label>
                 </div>
 
-                <?php if (!$editCashier): ?>
-                    <div class="alert alert-info">Default password: <strong>default123</strong></div>
-                <?php endif; ?>
+               
             </div>
 
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Save</button>
-                <a href="cashiers.php" class="btn btn-secondary">Cancel</a>
+                <a href="cashier.php" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

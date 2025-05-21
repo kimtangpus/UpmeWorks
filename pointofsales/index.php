@@ -168,30 +168,32 @@ $newOrderNumber = $_SESSION['order_number'];
 
 <div class="container-fluid">
     <div class="row">
-        
-        <div class="col-2 d-flex flex-column justify-content-between sidebar">
-            <div>
-                <a href="customers.php" class="btn btn-outline-primary w-100 mb-2">Customers</a>
-                <a href="orders.php"><button class="btn btn-outline-primary w-100 mb-2">Orders</button></a>
-                <a href="cashier.php"><button class="btn btn-outline-primary w-100 mb-2">Cashier</button></a>
-                <a href="reports.php"><button class="btn btn-outline-primary w-100 mb-2">Reports</button></a>
-                <a href="discounts.php" class="btn btn-outline-primary w-100 mb-2">Discounts</a>
-            </div>
-            <div>
-                <div class="dropdown w-100 mt-5">
-    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Settings
-    </button>
-    <ul class="dropdown-menu w-100">
-        <li><a class="dropdown-item" href="storage.php">Storage Areas</a></li>
-        <li><a class="dropdown-item" href="charges.php">Other Charges</a></li>
-        <li><a class="dropdown-item" href="config.php">Store Configuration</a></li>
-    </ul>
+        <div class="col-2 sidebar">
+    <div class="nav-links">
+        <a href="customers.php" class="btn btn-outline-primary w-100 mb-2">Customers</a>
+        <a href="orders.php"><button class="btn btn-outline-primary w-100 mb-2">Orders</button></a>
+        <a href="cashier.php"><button class="btn btn-outline-primary w-100 mb-2">Cashier</button></a>
+        <a href="reports.php"><button class="btn btn-outline-primary w-100 mb-2">Reports</button></a>
+        <a href="discounts.php" class="btn btn-outline-primary w-100 mb-2">Discounts</a>
+    </div>
+
+    <div class="bottom-controls">
+        <div class="dropdown w-100 mt-3">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Settings
+            </button>
+            <ul class="dropdown-menu w-100">
+                <li><a class="dropdown-item" href="storage.php">Storage Areas</a></li>
+                <li><a class="dropdown-item" href="charges.php">Other Charges</a></li>
+                <li><a class="dropdown-item" href="config.php">Store Configuration</a></li>
+            </ul>
+        </div>
+
+        <a href="logout.php" class="btn btn-outline-danger w-100 mt-2">Logout</a>
+    </div>
 </div>
 
-                <a href="logout.php" class="btn btn-outline-danger w-100 mt-2">Logout</a>
-            </div>
-        </div>
+
 
         <!-- Main  -->
         <div class="col-7">
@@ -207,15 +209,60 @@ $newOrderNumber = $_SESSION['order_number'];
                     echo "<div class='me-2 mb-2 d-flex align-items-center'>";
                     echo "<a href='index.php?category=" . urlencode($cat['name']) . "' class='btn $activeClass me-1'>" . htmlspecialchars($cat['name']) . "</a>";
                     echo "<button class='btn btn-sm btn-warning me-1' data-bs-toggle='modal' data-bs-target='#editCategoryModal{$cat['id']}'>✏️</button>";
+                    
                     echo "<form method='POST' onsubmit=\"return confirm('Delete this category?');\">
                             <input type='hidden' name='category_id' value='{$cat['id']}'>
                             <button type='submit' name='delete_category' class='btn btn-sm btn-danger'>🗑️</button>
                           </form>";
                     echo "</div>";
                 }
+                
                 ?>
+                <!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal<?php echo $cat['id']; ?>" tabindex="-1" aria-labelledby="editCategoryLabel<?php echo $cat['id']; ?>" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCategoryLabel<?php echo $cat['id']; ?>">Edit Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="category_id" value="<?php echo $cat['id']; ?>">
+        <div class="mb-3">
+          <label for="category_name_<?php echo $cat['id']; ?>" class="form-label">Category Name</label>
+          <input type="text" class="form-control" name="category_name" id="category_name_<?php echo $cat['id']; ?>" value="<?php echo htmlspecialchars($cat['name']); ?>" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="edit_category" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
                 <button class="btn btn-success me-2 mb-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">+ Add Category</button>
             </div>
+            <!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="category_name" class="form-label">Category Name</label>
+          <input type="text" class="form-control" id="category_name" name="category_name" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="add_category" class="btn btn-primary">Add Category</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
         
             <form method="GET" class="d-flex mb-3">
@@ -226,6 +273,40 @@ $newOrderNumber = $_SESSION['order_number'];
             <div class="product-grid d-flex flex-wrap gap-3">
                 <?php if (mysqli_num_rows($result) > 0): ?>
                     <?php while($product = mysqli_fetch_assoc($result)): ?>
+                        <!-- Product Edit Modal -->
+<div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" aria-labelledby="editProductModalLabel<?php echo $product['id']; ?>" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProductModalLabel<?php echo $product['id']; ?>">Edit Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Price</label>
+          <input type="number" step="0.01" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Image URL</label>
+          <input type="text" class="form-control" name="image_url" value="<?php echo htmlspecialchars($product['image_url']); ?>" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <input type="text" class="form-control" name="category" value="<?php echo htmlspecialchars($product['category']); ?>" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="edit_product" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
                         <div class="product-card-container">
                             <div class="product-card text-center p-2 add-to-order"
                                  data-name="<?php echo htmlspecialchars($product['name']); ?>"
@@ -255,6 +336,7 @@ $newOrderNumber = $_SESSION['order_number'];
                 <?php endif; ?>
             </div>
         </div>
+        
 
 <div class="col-3 right-panel d-flex flex-column">
     <div>
