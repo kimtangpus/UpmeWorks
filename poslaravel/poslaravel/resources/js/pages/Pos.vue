@@ -82,6 +82,10 @@ const categories = ['BREAKFAST', 'BEVERAGES', 'PASTA', 'SUSHI', 'SIDE DISH', 'RI
 const products = [
   { id: 1, name: 'EXTREME HOG FINISHER', price: 1700, image: '/sample-product.png' },
   { id: 2, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
+  { id: 3, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
+  { id: 4, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
+  { id: 5, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
+
   // Add more products
 ]
 
