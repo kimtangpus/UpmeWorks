@@ -1,31 +1,31 @@
 <template>
   <div class="flex h-screen bg-gray-100">
-    <!-- Sidebar -->
+    <!-- sidebar -->
     <aside class="w-56 bg-white border-r flex flex-col justify-between">
       <div>
         <div class="p-4">
           <img src="/servelogo.png" alt="Logo" class="h-12 mx-auto mb-2" style="width: 150px; height: auto;" />
         <nav class="space-y-2 text-black">
-          <SidebarButton icon="👤" label="Customers" />
-          <SidebarButton label="Orders" />
-          <SidebarButton label="Cashier" />
-          <SidebarButton label="Reports" />
+          <SidebarButton icon="fas fa-user" label="Customers" />
+          <SidebarButton icon="fas fa-receipt" label="Orders" />
+          <SidebarButton icon="fas fa-cash-register" label="Cashier" />
+          <SidebarButton icon="fas fa-chart-bar" label="Reports" />
         </nav>
         </div>
       </div>
       <div class="space-y-2 p-4 text-black">
-        <SidebarButton label="Settings" />
-        <SidebarButton label="Logout" />
+        <SidebarButton icon="fas fa-cog" label="Settings" />
+        <SidebarButton icon="fas fa-sign-out-alt" label="Logout" />
       </div>
     </aside>
 
-    <!-- Main Area -->
+    <!-- main  -->
     <main class="flex-1 flex">
-      <!-- Products Section -->
+      <!-- categories -->
       <section class="w-2/3 p-4 overflow-y-auto text-black border border-black rounded shadow bg-white">
         
         <div class="flex justify-between items-center mb-2">
-          <h2 class="font-semibold text-lg text-black">Categories</h2>
+          <h2 class="font-semibold text-xl text-black">Categories</h2>
           <div class="relative w-1/3">
             <input
               type="text"
@@ -45,13 +45,13 @@
           </div>
         </div>
 
-        <!-- Scrollable Categories with Arrows -->
+       
         <div class="flex items-center gap-2 mb-4">
-          <button @click="scrollCategories('left')" class="text-2xl px-2 border-2 rounded hover:bg-gray-200 shadow">&larr;</button>
+          <button @click="scrollCategories('left')" class="text-2xl px-2 border-2 rounded hover:bg-gray-200 shadow" style="height:60px">&larr;</button>
 
           <div
             ref="categoryContainer"
-            class="flex gap-2 overflow-x-auto no-scrollbar whitespace-nowrap flex-1 px-2"
+            class="flex gap-2 overflow-x-auto scrollbar whitespace-nowrap flex-1 px-2"
           >
             <CategoryButton
               v-for="category in categories"
@@ -60,10 +60,10 @@
             />
           </div>
 
-          <button @click="scrollCategories('right')" class="text-2xl px-2 border-2 rounded hover:bg-gray-200 shadow">&rarr;</button>
+          <button @click="scrollCategories('right')" class="text-2xl px-2 border-2 rounded hover:bg-gray-200 shadow "style="height:60px">&rarr;</button>
         </div>
 
-        <!-- Product Grid -->
+        <!-- products -->
         <div class="grid grid-cols-5 gap-4">
           <ProductCard
             v-for="product in products"
@@ -73,7 +73,7 @@
         </div>
       </section>
 
-      <!-- Order Section -->
+      <!-- order -->
       <section class="w-1/3 border-l p-4 bg-white flex flex-col text-black">
         <div class="flex justify-between mb-2 text-sm">
           <div>
@@ -99,7 +99,7 @@
         </div>
 
         <div class="flex-grow overflow-y-auto">
-          <!-- Cart Items will go here -->
+          <!-- ordered items -->
         </div>
 
         <div class="flex gap-4 mt-4">
@@ -117,7 +117,7 @@ import CategoryButton from '@/Components/CategoryButton.vue'
 import ProductCard from '@/Components/ProductCard.vue'
 import { ref } from 'vue'
 
-// Hardcoded category data (ready for DB later)
+
 const categories = ref([
   { id: 1, name: 'BREAKFAST' },
   { id: 2, name: 'BEVERAGES' },
@@ -133,7 +133,7 @@ const categories = ref([
   { id: 12, name: 'GROUP 12' }
 ])
 
-// Hardcoded product data (ready for DB later)
+
 const products = ref([
   { id: 1, name: 'EXTREME HOG FINISHER', price: 1700, image: '/sample-product.png' },
   { id: 2, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
@@ -143,11 +143,11 @@ const products = ref([
    { id: 6, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' }
 ])
 
-// Date & Time
+
 const currentDate = new Date().toLocaleDateString()
 const currentTime = new Date().toLocaleTimeString()
 
-// Category scroll logic
+
 const categoryContainer = ref(null)
 function scrollCategories(direction) {
   const container = categoryContainer.value
@@ -163,5 +163,5 @@ function scrollCategories(direction) {
 </script>
 
 <style scoped>
-/* Add any additional scoped styles here if needed */
+
 </style>
