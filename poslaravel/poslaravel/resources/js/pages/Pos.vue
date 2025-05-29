@@ -29,11 +29,11 @@
           <div class="relative w-1/3">
             <input
               type="text"
-              placeholder="Search Products..."
-              class="p-2 pl-10 border rounded w-full focus:outline-none"
+              placeholder="Search Products"
+              class="p-2 pl-3 border rounded w-full focus:outline-none"
             />
             <svg
-              class="w-5 h-5 absolute left-3 top-2.5 text-gray-500"
+              class="w-5 h-5 absolute right-3 top-2.5 text-gray-500"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -115,8 +115,7 @@
 import SidebarButton from '@/Components/SidebarButton.vue'
 import CategoryButton from '@/Components/CategoryButton.vue'
 import ProductCard from '@/Components/ProductCard.vue'
-import { ref } from 'vue'
-
+import { ref, onMounted } from 'vue'
 
 const categories = ref([
   { id: 1, name: 'BREAKFAST' },
@@ -133,22 +132,43 @@ const categories = ref([
   { id: 12, name: 'GROUP 12' }
 ])
 
-
 const products = ref([
   { id: 1, name: 'EXTREME HOG FINISHER', price: 1700, image: '/sample-product.png' },
   { id: 2, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
   { id: 3, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
   { id: 4, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
   { id: 5, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' },
-   { id: 6, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' }
+  { id: 6, name: 'FIESTA HOG GROWER', price: 1700, image: '/sample-product.png' }
 ])
 
+const currentDate = ref('')
+const currentTime = ref('')
 
-const currentDate = new Date().toLocaleDateString()
-const currentTime = new Date().toLocaleTimeString()
+const updateDateTime = () => {
+  const now = new Date()
 
+ 
+  currentDate.value = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+
+ 
+  currentTime.value = now.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
+}
+
+onMounted(() => {
+  updateDateTime()
+  setInterval(updateDateTime, 1000)
+})
 
 const categoryContainer = ref(null)
+
 function scrollCategories(direction) {
   const container = categoryContainer.value
   const scrollAmount = 150
@@ -161,6 +181,7 @@ function scrollCategories(direction) {
   }
 }
 </script>
+
 
 <style scoped>
 
