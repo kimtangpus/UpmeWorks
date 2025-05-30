@@ -101,10 +101,23 @@
         <div class="flex-grow overflow-y-auto">
           <!-- ordered items -->
         </div>
+         <div v-if="!showBillOut" class="flex w-full">
+    <!-- your POS layout (categories + order panel) -->
+  </div>
+
+  <div v-else class="w-full p-4">
+    <BillOut />
+  </div>
 
         <div class="flex gap-4 mt-4">
           <button class="flex-1 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-lg text-lg font-semibold">Hold Order</button>
-          <button class="flex-1 bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg text-lg font-semibold">Checkout</button>
+         <button
+  class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg text-lg font-semibold"
+  @click="showBillOut = true"
+>
+  Checkout
+</button>
+
         </div>
       </section>
     </main>
@@ -115,8 +128,11 @@
 import SidebarButton from '@/Components/SidebarButton.vue'
 import CategoryButton from '@/Components/CategoryButton.vue'
 import ProductCard from '@/Components/ProductCard.vue'
-import { ref, onMounted } from 'vue'
+import BillOut from '@/Components/BillOut.vue' 
 
+
+import { ref, onMounted } from 'vue'
+const showBillOut = ref(false)
 const categories = ref([
   { id: 1, name: 'BREAKFAST' },
   { id: 2, name: 'BEVERAGES' },
