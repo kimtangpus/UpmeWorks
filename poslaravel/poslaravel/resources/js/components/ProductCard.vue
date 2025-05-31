@@ -1,11 +1,11 @@
+<script setup>
+defineProps({ product: Object })
+</script>
+
 <template>
-  <div class="p-2 border rounded hover:shadow-lg  cursor-pointer text-center">
-    <img :src="product.image" alt="" class="h-20 mx-auto mb-2 object-contain" />
-    <div class="text-sm font-semibold">{{ product.name }}</div>
-    <div class="text-sm text-gray-500">₱ {{ product.price.toFixed(2) }}</div>
+  <div class="border p-2 rounded shadow hover:bg-gray-100">
+    <img :src="product.menu_image || '/default.png'" alt="" class="w-full h-24 object-cover mb-2">
+    <h3 class="font-semibold text-sm">{{ product.name }}</h3>
+    <p class="text-xs text-gray-600">₱{{ product.price }}</p>
   </div>
 </template>
-
-<script setup>
-defineProps(['product'])
-</script>
