@@ -12,7 +12,7 @@ class PosController extends Controller
 {
     $categories = PosCategory::with('menus')->get();
 
-    // Debug: check if data exists
+
     logger($categories->toArray());
 
     return Inertia::render('Pos', [
