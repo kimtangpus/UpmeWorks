@@ -127,7 +127,7 @@
       <span>₱{{ subtotal.toFixed(2) }}</span>
     </div>
     <div class="flex justify-between mb-2">
-      <span>Tax</span>
+      <span>VAT</span>
       <span>₱{{ tax.toFixed(2) }}</span>
     </div>
     <div class="flex justify-between font-bold text-lg border-t pt-2">
@@ -143,47 +143,54 @@
     </button>
     <button
       class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg text-lg font-semibold"
-      @click="showBillOut = true"
+      @click="handleProceed"
     >
       Proceed
     </button>
   </div>
 </section>
+<PaymentModal
+  v-if="showPaymentModal"
+  :grandTotal="payableAmount"
+  @close="showPaymentModal = false"
+  @payment-confirmed="handlePaymentConfirmed"
+/>
+
 <BillOut
   v-if="showBillOut"
   :orderItems="orderItems"
-  :paidAmount="payableAmount"
+  :paidAmount="paidAmount"
+  :changeAmount="changeAmount"
   @close="showBillOut = false"
   @confirm-payment="handleConfirm"
 />
 
+
     </main>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import SidebarButton from '@/Components/SidebarButton.vue'
 import CategoryButton from '@/Components/CategoryButton.vue'
 import ProductCard from '@/Components/ProductCard.vue'
 import BillOut from '@/Components/BillOut.vue'
+import PaymentModal from '@/Components/PaymentModal.vue'
 
 const props = defineProps({
-  categories: {
-    type: Array,
-    required: true
-  }
+  categories: Array
 })
 
 const selectedCategoryId = ref(null)
 const searchQuery = ref('')
 const currentDate = ref('')
 const currentTime = ref('')
-const showBillOut = ref(false)
 const categoryContainer = ref(null)
-
+const showPaymentModal = ref(false)
+const showBillOut = ref(false)
 const orderItems = ref([])
-
+const paidAmount = ref(0)
+const changeAmount = ref(0)
 
 onMounted(() => {
   updateDateTime()
@@ -210,7 +217,6 @@ function scrollCategories(direction) {
   })
 }
 
-// order logic
 function addToOrder(product) {
   const idx = orderItems.value.findIndex(item => item.id === product.id)
   if (idx !== -1) {
@@ -239,8 +245,21 @@ function removeItem(index) {
   orderItems.value.splice(index, 1)
 }
 
-const orderTotal = computed(() =>
-  orderItems.value.reduce((sum, item) => sum + item.total, 0).toFixed(2)
+const subtotal = computed(() =>
+  orderItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
+)
+
+const discountTotal = computed(() =>
+  orderItems.value.reduce((sum, item) =>
+    sum + item.price * item.quantity * (item.discount / 100), 0)
+)
+
+const tax = computed(() =>
+  (subtotal.value - discountTotal.value) * 0.12
+)
+
+const payableAmount = computed(() =>
+  subtotal.value - discountTotal.value + tax.value
 )
 
 const allProducts = computed(() => {
@@ -251,27 +270,33 @@ const allProducts = computed(() => {
   } else {
     products = props.categories.flatMap(c => c.menus ?? [])
   }
-  if (searchQuery.value.trim() !== '') {
+
+  if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase()
     products = products.filter(p => p.name.toLowerCase().includes(q))
   }
+
   return products
 })
 
-const subtotal = computed(() =>
-  orderItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
-)
+function handleProceed() {
+  showPaymentModal.value = true
+}
 
-const tax = computed(() => subtotal.value * 0.12) 
-const payableAmount = computed(() => subtotal.value + tax.value)
+function handlePaymentConfirmed({ paid, change }) {
+  paidAmount.value = paid
+  changeAmount.value = change
+  showPaymentModal.value = false
+  showBillOut.value = true
+}
 
 function handleConfirm() {
   alert('Payment Confirmed!')
   showBillOut.value = false
   orderItems.value = []
 }
-
 </script>
+
 
 <style scoped>
 
