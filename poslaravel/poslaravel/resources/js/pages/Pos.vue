@@ -171,11 +171,11 @@
 </template>
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
-import SidebarButton from '@/Components/SidebarButton.vue'
-import CategoryButton from '@/Components/CategoryButton.vue'
-import ProductCard from '@/Components/ProductCard.vue'
-import BillOut from '@/Components/BillOut.vue'
-import PaymentModal from '@/Components/PaymentModal.vue'
+import SidebarButton from '@/components/SidebarButton.vue'
+import CategoryButton from '@/components/CategoryButton.vue'
+import ProductCard from '@/components/ProductCard.vue'
+import BillOut from '@/components/BillOut.vue'
+import PaymentModal from '@/components/PaymentModal.vue'
 
 
 const props = defineProps({
