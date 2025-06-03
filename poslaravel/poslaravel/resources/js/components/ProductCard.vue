@@ -2,9 +2,14 @@
   <div
     class="bg-white border rounded-2xl shadow-md hover:shadow-lg transition p-4 flex flex-col justify-between items-center text-center"
   >
-
-    <div class="w-full h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center">
-      <span class="text-gray-400 text-sm">Image</span>
+    <div class="w-full h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
+      <img
+        v-if="product.menu_image"
+        :src="`/${product.menu_image}`"
+        alt="Product Image"
+        class="object-cover w-full h-full"
+      />
+      <span v-else class="text-gray-400 text-sm">Image</span>
     </div>
 
     <h3
