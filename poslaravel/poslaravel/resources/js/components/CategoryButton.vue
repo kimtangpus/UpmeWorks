@@ -1,13 +1,28 @@
 <template>
   <button
-    class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-    @click="$emit('click')"
+    class="flex flex-col items-center justify-center gap-1 w-full px-4 py-3 rounded font-medium shadow-sm transition-colors text-sm"
+    :class="[
+      isActive
+        ? 'bg-[#f0f5ec] text-green-700'
+        : 'bg-white text-green-700 hover:bg-[#f0f5ec]'
+    ]"
+    @click="toggleActive"
   >
-    {{ label }}
+    <i v-if="icon" :class="icon" class="text-lg"></i>
+    <span>{{ label }}</span>
   </button>
 </template>
 
 <script setup>
-defineProps(['label'])
-defineEmits(['click'])
+import { ref } from 'vue';
+
+const props = defineProps({
+  label: String,
+  icon: String,
+  modelValue: Boolean 
+})
+const emit = defineEmits(['update:modelValue'])
+
+
+
 </script>

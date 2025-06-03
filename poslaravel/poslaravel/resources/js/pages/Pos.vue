@@ -1,56 +1,34 @@
 <template>
-  <div class="flex h-screen bg-gray-100">
-    <aside class="w-56 bg-white border-r flex flex-col justify-between">
-      <div>
-        <div class="p-4">
-          <img src="/servelogo.png" alt="Logo" class="h-12 mx-auto mb-2" style="width: 150px;" />
-          <nav class="space-y-2 text-black">
-            <SidebarButton icon="fas fa-user" label="Customers" />
-            <SidebarButton icon="fas fa-receipt" label="Orders" />
-            <SidebarButton icon="fas fa-cash-register" label="Cashier" />
-            <SidebarButton icon="fas fa-chart-bar" label="Reports" />
-          </nav>
+  <div class="flex h-screen bg-[#f2f7f1]">
+    <aside class="w-60 bg-[#FFFFFF] border-r flex flex-col text-[#2e3c2f]">
+      <div class="p-4">
+        <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
+        <div class="space-y-2">
+          <CategoryButton
+            v-for="category in categories"
+            :key="category.id"
+            :label="category.name"
+            @click="selectedCategoryId = category.id"
+            :class="[
+              'w-full text-left px-4 py-2 rounded-lg font-semibold',
+              selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
+            ]"
+          />
         </div>
-      </div>
-      <div class="space-y-2 p-4 text-black">
-        <SidebarButton icon="fas fa-cog" label="Settings" />
-        <SidebarButton icon="fas fa-sign-out-alt" label="Logout" />
       </div>
     </aside>
 
-    <main class="flex-1 flex">
 
-      <section class="w-2/3 p-4 overflow-y-auto text-black border border-black rounded shadow bg-white">
-
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="font-semibold text-xl">Categories</h2>
+    <main class="flex-1 flex gap-4 p-4">
+      <section class="w-2/3 p-4 bg-white rounded-2xl shadow flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-semibold text-xl text-[#2e3c2f]">Menus</h2>
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search Menus"
-            class="p-2 pl-3 border rounded w-1/3 focus:outline-none"
+            class="p-2 border border-[#d0e0cd] rounded-xl w-1/3 shadow-sm focus:outline-none text-[#2e3c2f]"
           />
-        </div>
-
-        <div class="flex items-center gap-2 mb-4">
-          <button @click="scrollCategories('left')" class="text-2xl px-2 border-2 rounded hover:bg-gray-200 shadow h-14">
-            &larr;
-          </button>
-          <div
-            ref="categoryContainer"
-            class="flex gap-2 overflow-x-auto scrollbar whitespace-nowrap flex-1 px-2"
-          >
-            <CategoryButton
-              v-for="category in categories"
-              :key="category.id"
-              :label="category.name"
-              @click="selectedCategoryId = category.id"
-              :class="{ 'bg-gray-300': selectedCategoryId === category.id }"
-            />
-          </div>
-          <button @click="scrollCategories('right')" class="text-2xl px-2 border-2 rounded hover:bg-gray-200 shadow h-14">
-            &rarr;
-          </button>
         </div>
 
         <div class="grid grid-cols-5 gap-4">
@@ -61,114 +39,125 @@
             @add-to-order="addToOrder"
           />
         </div>
+
         <div v-if="allProducts.length === 0" class="text-center text-gray-500 mt-4">
           No menus available in this category.
         </div>
       </section>
 
 
-<section class="w-1/3 bg-white p-4 border-l flex flex-col text-black">
+<section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f]">
 
-  <div class="flex justify-between items-center mb-4">
-    <button class="bg-gray-200 px-4 py-2 rounded text-sm">+ Add Customer</button>
-    <div class="flex gap-2">
-      <button class="bg-gray-200 p-2 rounded">+</button>
-      <button class="bg-gray-200 p-2 rounded">🔍</button>
-    </div>
+  <div class="text-xs flex justify-between mb-2 text-gray-600">
+    <span>Transaction No.: 000000000000</span>
+    <span>Table No.: 25</span>
   </div>
 
 
-  <div class="flex-grow space-y-3 overflow-y-auto pr-1">
-    <div v-for="(item, idx) in orderItems" :key="item.id" class="border rounded-lg shadow p-3 bg-gray-50">
-      <div class="flex justify-between items-center mb-2">
-        <div class="font-semibold">{{ item.name }}</div>
-        <div class="text-sm text-gray-600">₱{{ (item.price * item.quantity).toFixed(2) }}</div>
+  <div class="bg-gray-100 text-center py-6 rounded-xl text-5xl font-bold text-[#2e3c2f] shadow mb-4">
+    ₱{{ payableAmount.toFixed(2) }}
+  </div>
+
+
+ <div class="flex-grow overflow-y-auto pr-1 space-y-2">
+  <div
+    v-for="(item, idx) in orderItems"
+    :key="item.id"
+    class="border rounded-xl shadow p-3 bg-[#f6fbf2]"
+  >
+    <div class="flex justify-between items-center">
+      <div class="font-semibold text-[#2e3c2f]">{{ item.name }}</div>
+      <div class="text-sm font-bold text-gray-700">₱{{ (item.price * item.quantity).toFixed(2) }}</div>
+    </div>
+
+    <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
+      <div class="flex items-center gap-2">
+        <button
+          @click="item.quantity > 1 && updateItemQty(item, item.quantity - 1)"
+          class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full"
+        >−</button>
+        <span class="w-6 text-center">{{ item.quantity }}</span>
+        <button
+          @click="updateItemQty(item, item.quantity + 1)"
+          class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full"
+        >+</button>
       </div>
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <div>
-          Quantity
-          <input
-            type="number"
-            v-model.number="item.quantity"
-            min="1"
-            class="w-full border rounded px-2 py-1 mt-1"
-            @change="updateItemTotal(item)"
-          />
-        </div>
-        <div>
-          Discount(%)
-          <input
-            type="number"
-            v-model.number="item.discount"
-            min="0"
-            max="100"
-            class="w-full border rounded px-2 py-1 mt-1"
-            @change="updateItemTotal(item)"
-          />
-        </div>
-      </div>
-      <div class="text-right text-sm mt-2 text-gray-600">
-        <button @click="removeItem(idx)" class="text-red-500 hover:underline">Remove</button>
-      </div>
+      <button @click="removeItem(idx)" class="text-red-500 text-xs hover:underline">Remove</button>
     </div>
   </div>
+</div>
 
-  <div class="mt-4 flex justify-between text-sm">
-    <button class="text-orange-500 font-semibold">Add</button>
-    <button class="text-orange-500 font-semibold">Discount</button>
-    <button class="text-orange-500 font-semibold">Coupon Code</button>
-    <button class="text-orange-500 font-semibold">Note</button>
+
+<div class="bg-[#cde4b2] text-sm rounded-xl p-4 mt-4 space-y-2 shadow-inner">
+  <div class="flex justify-between">
+    <div class="font-semibold">Total:</div>
+    <div></div>
   </div>
-
- 
-  <div class="mt-4 border-t pt-4 text-sm">
-    <div class="flex justify-between mb-2">
-      <span>Subtotal</span>
-      <span>₱{{ subtotal.toFixed(2) }}</span>
-    </div>
-    <div class="flex justify-between mb-2">
-      <span>VAT</span>
-      <span>₱{{ tax.toFixed(2) }}</span>
-    </div>
-    <div class="flex justify-between font-bold text-lg border-t pt-2">
-      <span>Payable Amount</span>
-      <span>₱{{ payableAmount.toFixed(2) }}</span>
-    </div>
+  <div class="flex justify-between">
+    <span>Discount:</span>
+    <span>₱{{ discountTotal.toFixed(2) }}</span>
   </div>
-
-
-  <div class="flex gap-4 mt-4">
-    <button class="flex-1 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-lg text-lg font-semibold">
-      Hold Order
-    </button>
-    <button
-      class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg text-lg font-semibold"
-      @click="handleProceed"
-    >
-      Proceed
-    </button>
+  <div class="flex justify-between">
+    <span>Sub total:</span>
+    <span>₱{{ subtotal.toFixed(2) }}</span>
   </div>
+  <div class="flex justify-between mt-3">
+    <div class="font-semibold">Payments:</div>
+    <div></div>
+  </div>
+  <div class="flex justify-between">
+    <span>Service Charge:</span>
+    <span>₱{{ serviceCharge.toFixed(2) }}</span>
+  </div>
+  <div class="flex justify-between">
+    <span>Other Charges:</span>
+    <span>₱0.00</span>
+  </div>
+</div>
+
+
+ <div class="flex justify-between gap-2 mt-4">
+  <button
+    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+    @click="voidOrder"
+  >
+    Void
+  </button>
+  <button
+    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+  >
+    Send Order Slip
+  </button>
+  <button
+    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+    @click="handleProceed"
+  >
+    Print Bill
+  </button>
+</div>
+
 </section>
-<PaymentModal
-  v-if="showPaymentModal"
-  :grandTotal="payableAmount"
-  @close="showPaymentModal = false"
-  @payment-confirmed="handlePaymentConfirmed"
-/>
 
-<BillOut
-  v-if="showBillOut"
-  :orderItems="orderItems"
-  :paidAmount="paidAmount"
-  :changeAmount="changeAmount"
-  @close="showBillOut = false"
-  @confirm-payment="handleConfirm"
-/>
+      <PaymentModal
+        v-if="showPaymentModal"
+        :grandTotal="payableAmount"
+        @close="showPaymentModal = false"
+        @payment-confirmed="handlePaymentConfirmed"
+      />
 
-
+      <BillOut
+        v-if="showBillOut"
+        :orderItems="orderItems"
+        :paidAmount="paidAmount"
+        :changeAmount="changeAmount"
+        @close="showBillOut = false"
+        @confirm-payment="handleConfirm"
+      />
     </main>
   </div>
 </template>
+
+
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import SidebarButton from '@/components/SidebarButton.vue'
@@ -297,6 +286,20 @@ function handleConfirm() {
   orderItems.value = []
 }
 
+function updateItemQty(item, newQty) {
+  item.quantity = Math.max(1, newQty)
+  updateItemTotal(item)
+}
+
+function voidOrder() {
+  if (confirm("Are you sure you want to void this order?")) {
+    orderItems.value = []
+  }
+}
+
+const serviceCharge = computed(() =>
+  (subtotal.value - discountTotal.value) * 0.1 
+)
 
 </script>
 
