@@ -177,6 +177,7 @@ import ProductCard from '@/Components/ProductCard.vue'
 import BillOut from '@/Components/BillOut.vue'
 import PaymentModal from '@/Components/PaymentModal.vue'
 
+
 const props = defineProps({
   categories: Array
 })
@@ -295,6 +296,8 @@ function handleConfirm() {
   showBillOut.value = false
   orderItems.value = []
 }
+
+
 </script>
 
 
