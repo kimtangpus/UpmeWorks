@@ -1,57 +1,43 @@
 <script setup lang="ts">
-import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
-import NavUser from '@/components/NavUser.vue';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
-import AppLogo from './AppLogo.vue';
+import CategoryButton from '@/components/CategoryButton.vue'
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-];
+defineProps({
+    categories: Object,
+    selectedCategoryId: Number
+})
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
-];
+const emit = defineEmits(['update:selectedCategoryId'])
+
+const selectCategory = (id: number) => {
+    emit('update:selectedCategoryId', id)
+}
+
+
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
-        <SidebarHeader>
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')">
-                            <AppLogo />
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-        </SidebarHeader>
 
-        <SidebarContent>
-            <NavMain :items="mainNavItems" />
-        </SidebarContent>
+    <aside class="w-60 bg-[#FFFFFF] border-r flex flex-col text-[#2e3c2f]">
+        <div class="p-4">
+            <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
+            
+            <div class="h-150 overflow-y-auto">
+                <div class="space-y-2">
+                    <CategoryButton
+                        v-for="category in categories"
+                        :key="category.id"
+                        :label="category.name"
+                        @click="selectCategory(category.id)"
+                        :class="[
+                            'w-full text-left px-4 py-2 rounded-lg font-semibold',
+                            selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
+                        ]"
+                        :isActive="selectedCategoryId === category.id"
+                    />
+                </div>
+            </div>
+        </div>
+    </aside>
 
-        <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
-            <NavUser />
-        </SidebarFooter>
-    </Sidebar>
-    <slot />
+
 </template>

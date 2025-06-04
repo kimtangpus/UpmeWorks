@@ -2,27 +2,12 @@
   <div class="flex flex-col min-h-screen bg-[#f2f7f1]">
     
     <div class="flex flex-1 pb-20"> 
-      <aside class="w-60 bg-[#FFFFFF] border-r flex flex-col text-[#2e3c2f]">
-        <div class="p-4">
-          <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
-          
-          <div class="h-150 overflow-y-auto">
-          <div class="space-y-2">
-            <CategoryButton
-              v-for="category in categories"
-              :key="category.id"
-              :label="category.name"
-              @click="selectedCategoryId = category.id"
-              :class="[
-                'w-full text-left px-4 py-2 rounded-lg font-semibold',
-                selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
-              ]"
-            />
-            
-          </div>
-          </div>
-        </div>
-      </aside>
+
+      <!-- sidebar here  -->
+      <AppSidebar
+        :categories="categories"
+        v-model:selectedCategoryId="selectedCategoryId"
+      />
 
       <main class="flex-1 flex gap-4 p-4">
         <section class="w-2/3 p-4 bg-white rounded-2xl shadow flex flex-col">
@@ -192,11 +177,11 @@
 
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
-import CategoryButton from '@/components/CategoryButton.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import BillOut from '@/components/BillOut.vue'
 import PaymentModal from '@/components/PaymentModal.vue'
 import BottomMenuButton from '@/components/BottomMenuButton.vue'
+import AppSidebar from '@/components/AppSidebar.vue'
 
 
 const props = defineProps({

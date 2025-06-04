@@ -19,7 +19,8 @@ import { ref } from 'vue';
 const props = defineProps({
   label: String,
   icon: String,
-  modelValue: Boolean 
+  modelValue: Boolean,
+  isActive: Boolean 
 })
 const emit = defineEmits(['update:modelValue'])
 
