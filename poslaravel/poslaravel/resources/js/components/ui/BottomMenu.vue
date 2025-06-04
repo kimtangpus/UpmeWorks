@@ -19,8 +19,8 @@
         <div class="font-bold">
             © 2025 UPme Works. All rights reserved.
         </div>
-        <div class="font-bold">
-            Wed Apr 23  4:41 PM (hardcoded pa to)
+        <div class="font-medium">
+            {{ currentDate }} {{ currentTime }} 
         </div>
         </div>
     </div>
@@ -28,5 +28,11 @@
 
 <script setup lang="ts">
 import BottomMenuButton from './bottom-menu/BottomMenuButton.vue';
+
+defineProps({
+    currentTime: String,
+    currentDate: String
+})
+
 
 </script>

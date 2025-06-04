@@ -1,174 +1,71 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-[#f2f7f1]">
-    
-    <div class="flex flex-1 pb-20"> 
-
-      <!-- sidebar here  -->
+  <div class="grid grid-rows-[auto_1fr_auto] min-h-screen bg-[#f2f7f1]">
+    <!-- Main Content Area with Grid -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
       <AppSidebar
         :categories="categories"
         v-model:selectedCategoryId="selectedCategoryId"
       />
 
-      <main class="flex-1 flex gap-4 p-4">
-        <!-- products  -->
-        <section class="w-2/3 p-4 bg-white rounded-2xl shadow flex flex-col">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="font-semibold text-xl text-[#2e3c2f]">Menus</h2>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search Menus"
-              class="p-2 border border-[#d0e0cd] rounded-xl w-1/3 shadow-sm focus:outline-none text-[#2e3c2f]"
-            />
-          </div>
+      <!-- Main Content with Header -->
+      <div class="flex-1 flex flex-col">
+        <!-- Header -->
+        <AppHeader />
+       
+        <!-- Main Content -->
+        <main class="flex-1 flex gap-4 p-4 overflow-hidden">
+          <MenuListings
+            :allProducts="allProducts"
+            v-model:searchQuery="searchQuery"
+            @add-to-order="addToOrder"
+          />
 
-          <div class="grid grid-cols-5 gap-4 ">
-            <ProductCard
-              v-for="product in allProducts"
-              :key="product.id"
-              :product="product"
-              @add-to-order="addToOrder"
-            />
-          </div>
-
-          <div v-if="allProducts.length === 0" class="text-center text-gray-500 mt-4">
-            No menus available in this category.
-          </div>
-        </section>
-
-        <section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f] h-[calc(100vh-120px)]">
-
-          <div class="text-xs flex justify-between mb-2 text-gray-600">
-            <span>Transaction No.: 000000000000</span>
-            <span>Table No.: 25</span>
-          </div>
-
-          <div class="bg-gray-100 p-4 rounded-xl shadow-inner flex flex-col gap-4 flex-1 min-h-0">
-
-            <div class="shrink-0 bg-black text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
-              ₱{{ payableAmount.toFixed(2) }}
-            </div>
-
-            <div class="flex-1 overflow-y-auto space-y-2 pr-2 min-h-0">
-              <div
-                v-for="(item, idx) in orderItems"
-                :key="item.id"
-                class="border rounded-xl shadow p-3 bg-[#f6fbf2] "
-              >
-                <div class="flex justify-between items-center">
-                  <div class="font-semibold text-green-700">{{ item.name }}</div>
-                  <div class="text-sm font-bold text-[#87b46f] ">
-                    ₱{{ (item.price * item.quantity).toFixed(2) }}
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
-                  <div class="flex items-center gap-2">
-                    <button
-                      @click="item.quantity > 1 && updateItemQty(item, item.quantity - 1)"
-                      class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
-                    >−</button>
-                    <span class="w-6 text-center">{{ item.quantity }}</span>
-                    <button
-                      @click="updateItemQty(item, item.quantity + 1)"
-                      class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
-                    >+</button>
-                  </div>
-                  <button @click="removeItem(idx)" class=" text-xs hover:underline">🗑️</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-[#cde4b2] text-sm rounded-xl p-4 mt-4 space-y-2 shadow-inner text-green-700">
-            <div class="flex justify-between">
-              <div class="font-semibold">Total:</div>
-              <div></div>
-            </div>
-            <div class="flex justify-between">
-              <span>Discount:</span>
-              <span>₱{{ discountTotal.toFixed(2) }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>Sub total:</span>
-              <span>₱{{ subtotal.toFixed(2) }}</span>
-            </div>
-            <div class="flex justify-between mt-3">
-              <div class="font-semibold">Payments:</div>
-              <div></div>
-            </div>
-            <div class="flex justify-between">
-              <span>Service Charge:</span>
-              <span>₱{{ serviceCharge.toFixed(2) }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>Other Charges:</span>
-              <span>₱0.00</span>
-            </div>
-          </div>
-
-          <div class="flex justify-between gap-2 mt-4">
-            <button
-              class="flex-1 bg-[--button-green] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-              @click="voidOrder"
-            >
-              Void
-            </button>
-            <button
-              class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-            >
-              Send Order Slip
-            </button>
-            <button
-              class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-              @click="handleProceed"
-            >
-              Print Bill
-            </button>
-          </div>
-        </section>
-
-        <PaymentModal
-          v-if="showPaymentModal"
-          :grandTotal="payableAmount"
-          @close="showPaymentModal = false"
-          @payment-confirmed="handlePaymentConfirmed"
-        />
-
-        <BillOut
-          v-if="showBillOut"
-          :orderItems="orderItems"
-          :paidAmount="paidAmount"
-          :changeAmount="changeAmount"
-          @close="showBillOut = false"
-          @confirm-payment="handleConfirm"
-        />
-      </main>
+          <TotalOrderCalc
+            :orderItems="orderItems"
+            :subtotal="subtotal"
+            :discountTotal="discountTotal"
+            :tax="tax"
+            :serviceCharge="serviceCharge"
+            :payableAmount="payableAmount"
+            @update-item-qty="updateItemQty"
+            @remove-item="removeItem"
+            @void-order="voidOrder"
+            @proceed="handleProceed"
+            @payment-confirmed="handlePaymentConfirmed"
+            @confirm="handleConfirm"
+          />
+        </main>
+      </div>
     </div>
 
-    <div class="flex-none">
-      <BottomMenu /> 
+    <!-- Bottom Menu -->
+    <div class="bg-white border-t shadow-lg">
+      <BottomMenu
+        :orderItems="orderItems"
+        :currentDate="currentDate"
+        :currentTime="currentTime" 
+      /> 
     </div>
-
   </div>
 </template>
 
 
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
-import ProductCard from '@/components/ProductCard.vue'
-import BillOut from '@/components/BillOut.vue'
-import PaymentModal from '@/components/PaymentModal.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import BottomMenu from '@/components/ui/BottomMenu.vue'
+import MenuListings from '@/components/MenuListings.vue'
+import TotalOrderCalc from '@/components/TotalOrderCalc.vue'
+import AppHeader from '@/components/AppHeader.vue'
 
 
 const props = defineProps({
   categories: Array
 })
 
-const selectedCategoryId = ref(null)
 const searchQuery = ref('')
+const selectedCategoryId = ref(null)
 const currentDate = ref('')
 const currentTime = ref('')
 const categoryContainer = ref(null)
@@ -186,12 +83,22 @@ onMounted(() => {
 
 function updateDateTime() {
   const now = new Date()
-  currentDate.value = now.toLocaleDateString('en-US', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+
+  // Format: Wed Apr 23
+  const date = now.toLocaleDateString('en-US', {
+    weekday: 'short',  // Wed
+    month: 'short',    // Apr
+    day: 'numeric'     // 23
   })
-  currentTime.value = now.toLocaleTimeString('en-US', {
-    hour: 'numeric', minute: '2-digit'
+
+  const time = now.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true       // ensures AM/PM format
   })
+
+  currentDate.value = date
+  currentTime.value = time
 }
 
 function scrollCategories(direction) {
@@ -227,6 +134,11 @@ function updateItemTotal(item) {
   item.total = item.quantity * item.price * (1 - item.discount / 100)
 }
 
+function updateItemQty(item, newQty) {
+  item.quantity = Math.max(1, newQty)
+  updateItemTotal(item)
+}
+
 function removeItem(index) {
   orderItems.value.splice(index, 1)
 }
@@ -244,8 +156,12 @@ const tax = computed(() =>
   (subtotal.value - discountTotal.value) * 0.12
 )
 
+const serviceCharge = computed(() =>
+  (subtotal.value - discountTotal.value) * 0.1
+)
+
 const payableAmount = computed(() =>
-  subtotal.value - discountTotal.value + tax.value
+  subtotal.value - discountTotal.value + tax.value + serviceCharge.value
 )
 
 const allProducts = computed(() => {
@@ -282,24 +198,17 @@ function handleConfirm() {
   orderItems.value = []
 }
 
-function updateItemQty(item, newQty) {
-  item.quantity = Math.max(1, newQty)
-  updateItemTotal(item)
-}
-
 function voidOrder() {
   if (confirm("Are you sure you want to void this order?")) {
     orderItems.value = []
   }
 }
 
-const serviceCharge = computed(() =>
-  (subtotal.value - discountTotal.value) * 0.1 
-)
-
 </script>
 
 
 <style scoped>
-
+.overflow-hidden {
+  overflow: hidden;
+}
 </style>
