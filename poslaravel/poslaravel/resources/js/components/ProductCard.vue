@@ -13,13 +13,13 @@
     </div>
 
     <h3
-      class="font-semibold text-base text-gray-800 truncate w-full"
+      class="font-semibold text-base truncate w-full text-green-700"
       :title="product.name"
     >
       {{ product.name }}
     </h3>
 
-    <p class="text-green-600 font-semibold text-lg mt-1">
+    <p class="text-[#87b46f] font-semibold text-lg mt-1">
       ₱{{ Number(product.price).toFixed(2) }}
     </p>
 

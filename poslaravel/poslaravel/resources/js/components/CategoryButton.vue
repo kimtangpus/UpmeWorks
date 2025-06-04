@@ -1,6 +1,6 @@
 <template>
   <button
-    class="flex flex-col items-center justify-center gap-1 w-full px-4 py-3 rounded font-medium shadow-sm transition-colors text-sm"
+    class="flex flex-col items-center justify-center gap-1 w-full px-4 py-3 rounded font-lg shadow-sm transition-colors text-sm"
     :class="[
       isActive
         ? 'bg-[#f0f5ec] text-green-700'
