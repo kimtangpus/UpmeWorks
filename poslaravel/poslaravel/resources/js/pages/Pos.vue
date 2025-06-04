@@ -1,176 +1,199 @@
 <template>
-  <div class="flex h-screen bg-[#f2f7f1]">
+  <div class="flex flex-col min-h-screen bg-[#f2f7f1]">
     
-  <aside class="w-60 bg-[#FFFFFF] border-r flex flex-col text-[#2e3c2f]">
-    <div class="p-4">
-      <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
-      
-      <div class="h-150 overflow-y-auto">
-      <div class="space-y-2">
-        <CategoryButton
-          v-for="category in categories"
-          :key="category.id"
-          :label="category.name"
-          @click="selectedCategoryId = category.id"
-          :class="[
-            'w-full text-left px-4 py-2 rounded-lg font-semibold',
-            selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
-          ]"
+    <div class="flex flex-1 pb-20"> 
+      <aside class="w-60 bg-[#FFFFFF] border-r flex flex-col text-[#2e3c2f]">
+        <div class="p-4">
+          <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
+          
+          <div class="h-150 overflow-y-auto">
+          <div class="space-y-2">
+            <CategoryButton
+              v-for="category in categories"
+              :key="category.id"
+              :label="category.name"
+              @click="selectedCategoryId = category.id"
+              :class="[
+                'w-full text-left px-4 py-2 rounded-lg font-semibold',
+                selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
+              ]"
+            />
+            
+          </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="flex-1 flex gap-4 p-4">
+        <section class="w-2/3 p-4 bg-white rounded-2xl shadow flex flex-col">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="font-semibold text-xl text-[#2e3c2f]">Menus</h2>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search Menus"
+              class="p-2 border border-[#d0e0cd] rounded-xl w-1/3 shadow-sm focus:outline-none text-[#2e3c2f]"
+            />
+          </div>
+
+          <div class="grid grid-cols-5 gap-4 ">
+            <ProductCard
+              v-for="product in allProducts"
+              :key="product.id"
+              :product="product"
+              @add-to-order="addToOrder"
+            />
+          </div>
+
+          <div v-if="allProducts.length === 0" class="text-center text-gray-500 mt-4">
+            No menus available in this category.
+          </div>
+        </section>
+
+        <section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f] h-[calc(100vh-120px)]">
+
+          <div class="text-xs flex justify-between mb-2 text-gray-600">
+            <span>Transaction No.: 000000000000</span>
+            <span>Table No.: 25</span>
+          </div>
+
+          <div class="bg-gray-100 p-4 rounded-xl shadow-inner flex flex-col gap-4 flex-1 min-h-0">
+
+            <div class="shrink-0 bg-black text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
+              ₱{{ payableAmount.toFixed(2) }}
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-2 pr-2 min-h-0">
+              <div
+                v-for="(item, idx) in orderItems"
+                :key="item.id"
+                class="border rounded-xl shadow p-3 bg-[#f6fbf2] "
+              >
+                <div class="flex justify-between items-center">
+                  <div class="font-semibold text-green-700">{{ item.name }}</div>
+                  <div class="text-sm font-bold text-[#87b46f] ">
+                    ₱{{ (item.price * item.quantity).toFixed(2) }}
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
+                  <div class="flex items-center gap-2">
+                    <button
+                      @click="item.quantity > 1 && updateItemQty(item, item.quantity - 1)"
+                      class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
+                    >−</button>
+                    <span class="w-6 text-center">{{ item.quantity }}</span>
+                    <button
+                      @click="updateItemQty(item, item.quantity + 1)"
+                      class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
+                    >+</button>
+                  </div>
+                  <button @click="removeItem(idx)" class=" text-xs hover:underline">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-[#cde4b2] text-sm rounded-xl p-4 mt-4 space-y-2 shadow-inner text-green-700">
+            <div class="flex justify-between">
+              <div class="font-semibold">Total:</div>
+              <div></div>
+            </div>
+            <div class="flex justify-between">
+              <span>Discount:</span>
+              <span>₱{{ discountTotal.toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Sub total:</span>
+              <span>₱{{ subtotal.toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between mt-3">
+              <div class="font-semibold">Payments:</div>
+              <div></div>
+            </div>
+            <div class="flex justify-between">
+              <span>Service Charge:</span>
+              <span>₱{{ serviceCharge.toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Other Charges:</span>
+              <span>₱0.00</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between gap-2 mt-4">
+            <button
+              class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+              @click="voidOrder"
+            >
+              Void
+            </button>
+            <button
+              class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+            >
+              Send Order Slip
+            </button>
+            <button
+              class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+              @click="handleProceed"
+            >
+              Print Bill
+            </button>
+          </div>
+        </section>
+
+        <PaymentModal
+          v-if="showPaymentModal"
+          :grandTotal="payableAmount"
+          @close="showPaymentModal = false"
+          @payment-confirmed="handlePaymentConfirmed"
         />
-        
-      </div>
-      </div>
-    </div>
-  </aside>
 
-
-
-
-    <main class="flex-1 flex gap-4 p-4">
-      <section class="w-2/3 p-4 bg-white rounded-2xl shadow flex flex-col">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="font-semibold text-xl text-[#2e3c2f]">Menus</h2>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search Menus"
-            class="p-2 border border-[#d0e0cd] rounded-xl w-1/3 shadow-sm focus:outline-none text-[#2e3c2f]"
-          />
-        </div>
-
-        <div class="grid grid-cols-5 gap-4 ">
-          <ProductCard
-            v-for="product in allProducts"
-            :key="product.id"
-            :product="product"
-            @add-to-order="addToOrder"
-          />
-        </div>
-
-        <div v-if="allProducts.length === 0" class="text-center text-gray-500 mt-4">
-          No menus available in this category.
-        </div>
-      </section>
-
-<section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f] h-[calc(100vh-40px)]">
-
-  <div class="text-xs flex justify-between mb-2 text-gray-600">
-    <span>Transaction No.: 000000000000</span>
-    <span>Table No.: 25</span>
-  </div>
-
-  <div class="bg-gray-100 p-4 rounded-xl shadow-inner flex flex-col gap-4 flex-1 min-h-0">
-
-    <div class="shrink-0 bg-black text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
-      ₱{{ payableAmount.toFixed(2) }}
+        <BillOut
+          v-if="showBillOut"
+          :orderItems="orderItems"
+          :paidAmount="paidAmount"
+          :changeAmount="changeAmount"
+          @close="showBillOut = false"
+          @confirm-payment="handleConfirm"
+        />
+      </main>
     </div>
 
-    <div class="flex-1 overflow-y-auto space-y-2 pr-2 min-h-0">
-      <div
-        v-for="(item, idx) in orderItems"
-        :key="item.id"
-        class="border rounded-xl shadow p-3 bg-[#f6fbf2] "
-      >
-        <div class="flex justify-between items-center">
-          <div class="font-semibold text-green-700">{{ item.name }}</div>
-          <div class="text-sm font-bold text-[#87b46f] ">
-            ₱{{ (item.price * item.quantity).toFixed(2) }}
-          </div>
-        </div>
+    <div class="flex-none">
+      <nav class="bg-white border-t shadow-md fixed bottom-[32px] left-0 w-full z-40 flex justify-center space-x-8 text-black p-4">
+        <BottomMenuButton icon="fas fa-circle-play" label="Start Day" />
+        <BottomMenuButton icon="fas fa-stop" label="End Day" />
+        <BottomMenuButton icon="fas fa-file-invoice-dollar" label="Show Orders" />
+        <BottomMenuButton icon="fas fa-percent" label="Apply Discount" />
+        <BottomMenuButton icon="fas fa-cash-register" label="Bill Out" />
+        <BottomMenuButton icon="fas fa-arrow-down-up-across-line" label="Transfer Table" />
+        <BottomMenuButton icon="fas fa-file-invoice-dollar" label="Refunds" />
+        <BottomMenuButton icon="fas fa-divide" label="Split Bill" />
+        <BottomMenuButton icon="fas fa-print" label="Print X-Report" />
+        <BottomMenuButton icon="fas fa-print" label="Print Z-Report" />
+        <BottomMenuButton icon="fas fa-file" label="Reports" />
+        <BottomMenuButton icon="fas fa-clipboard" label="Back Office" />
+      </nav>
 
-        <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
-          <div class="flex items-center gap-2">
-            <button
-              @click="item.quantity > 1 && updateItemQty(item, item.quantity - 1)"
-              class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
-            >−</button>
-            <span class="w-6 text-center">{{ item.quantity }}</span>
-            <button
-              @click="updateItemQty(item, item.quantity + 1)"
-              class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
-            >+</button>
-          </div>
-          <button @click="removeItem(idx)" class=" text-xs hover:underline">🗑️</button>
+      <div class="bg-[#CAE0BC] text-white text-xs py-2 px-4 fixed bottom-0 left-0 w-full z-50 flex justify-between items-center">
+        <div class="font-medium text-[#094C2D]">
+          © 2025 UPme Works. All rights reserved.
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="bg-[#cde4b2] text-sm rounded-xl p-4 mt-4 space-y-2 shadow-inner text-green-700">
-    <div class="flex justify-between">
-      <div class="font-semibold">Total:</div>
-      <div></div>
-    </div>
-    <div class="flex justify-between">
-      <span>Discount:</span>
-      <span>₱{{ discountTotal.toFixed(2) }}</span>
-    </div>
-    <div class="flex justify-between">
-      <span>Sub total:</span>
-      <span>₱{{ subtotal.toFixed(2) }}</span>
-    </div>
-    <div class="flex justify-between mt-3">
-      <div class="font-semibold">Payments:</div>
-      <div></div>
-    </div>
-    <div class="flex justify-between">
-      <span>Service Charge:</span>
-      <span>₱{{ serviceCharge.toFixed(2) }}</span>
-    </div>
-    <div class="flex justify-between">
-      <span>Other Charges:</span>
-      <span>₱0.00</span>
-    </div>
-  </div>
-
-  <div class="flex justify-between gap-2 mt-4">
-    <button
-      class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-      @click="voidOrder"
-    >
-      Void
-    </button>
-    <button
-      class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-    >
-      Send Order Slip
-    </button>
-    <button
-      class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-      @click="handleProceed"
-    >
-      Print Bill
-    </button>
-  </div>
-</section>
-
-      <PaymentModal
-        v-if="showPaymentModal"
-        :grandTotal="payableAmount"
-        @close="showPaymentModal = false"
-        @payment-confirmed="handlePaymentConfirmed"
-      />
-
-      <BillOut
-        v-if="showBillOut"
-        :orderItems="orderItems"
-        :paidAmount="paidAmount"
-        :changeAmount="changeAmount"
-        @close="showBillOut = false"
-        @confirm-payment="handleConfirm"
-      />
-    </main>
   </div>
 </template>
 
 
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
-import SidebarButton from '@/components/SidebarButton.vue'
 import CategoryButton from '@/components/CategoryButton.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import BillOut from '@/components/BillOut.vue'
 import PaymentModal from '@/components/PaymentModal.vue'
+import BottomMenuButton from '@/components/BottomMenuButton.vue'
 
 
 const props = defineProps({
