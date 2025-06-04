@@ -11,7 +11,7 @@
     <button
       v-else
       @click="$emit('click')"
-      class="flex flex-col w-[100px] h-[100px] items-center gap-1 p-3 rounded border shadow-5 hover:bg-gray-100 w-full text-center"
+      class="flex flex-col w-[100px] h-[100px] items-center gap-1 p-3 rounded shadow-5 border border-gray-300 hover:bg-gray-100 w-full text-center"
     >
       <i :class="icon" class="text-[30px] w-[30px] h-[30px] flex items-center justify-center"></i>
       <span class="text-sm">{{ label }}</span>

@@ -3,7 +3,7 @@
     class="flex flex-col items-center justify-center gap-1 w-full px-4 py-3 rounded font-lg shadow-sm transition-colors text-sm"
     :class="[
       isActive
-        ? 'bg-[#f0f5ec] text-green-700'
+        ? 'bg-[#f0f5ec] text-(--dark-green)'
         : 'bg-white text-green-700 hover:bg-[#f0f5ec]'
     ]"
     @click="toggleActive"
