@@ -1,18 +1,22 @@
 <template>
-    <section class="w-2/3 p-4 bg-white rounded-2xl shadow flex flex-col">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="font-semibold text-xl text-[#2e3c2f]">Menus</h2>
-            
-            <input
-                :value="searchQuery"
-                @input="$emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
-                type="text"
-                placeholder="Search Menus"
-                class="p-2 border border-[#d0e0cd] rounded-xl w-1/3 shadow-sm focus:outline-none text-[#2e3c2f]"
-            />
+    <section class="w-2/3 p-4 bg-[#F8FAF8] rounded-2xl shadow flex flex-col">
+        <!-- search bar header -->
+        <div class="flex justify-between items-center mb-4">  
+            <div class="relative w-1/2">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input
+                    :value="searchQuery"
+                    @input="$emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
+                    type="text"
+                    placeholder="Search Menus"
+                    class="p-2 pl-10 border border-[#d0e0cd] rounded-xl w-full shadow-sm focus:outline-none text-[#2e3c2f]"
+                />
+            </div>
         </div>
 
-        <div class="grid grid-cols-5 gap-4">
+        <div class="grid grid-cols-5 gap-4 bg-(--whote)">
             <ProductCard
                 v-for="product in allProducts"
                 :key="product.id"

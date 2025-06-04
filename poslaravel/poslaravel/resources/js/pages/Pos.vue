@@ -1,26 +1,22 @@
 <template>
-  <div class="grid grid-rows-[auto_1fr_auto] min-h-screen bg-[#f2f7f1]">
-    <!-- Main Content Area with Grid -->
-    <div class="flex flex-1 overflow-hidden">
+  <div class="flex flex-col h-screen bg-[#f2f7f1]">
+    <div class="flex flex-1 pb-40"> <!-- Add padding-bottom to account for fixed bottom menu -->
       <!-- Sidebar -->
       <AppSidebar
         :categories="categories"
         v-model:selectedCategoryId="selectedCategoryId"
       />
-
-      <!-- Main Content with Header -->
       <div class="flex-1 flex flex-col">
         <!-- Header -->
         <AppHeader />
        
         <!-- Main Content -->
-        <main class="flex-1 flex gap-4 p-4 overflow-hidden">
+        <main class="flex-1 flex gap-4 p-4">
           <MenuListings
             :allProducts="allProducts"
             v-model:searchQuery="searchQuery"
             @add-to-order="addToOrder"
           />
-
           <TotalOrderCalc
             :orderItems="orderItems"
             :subtotal="subtotal"
@@ -38,15 +34,12 @@
         </main>
       </div>
     </div>
-
-    <!-- Bottom Menu -->
-    <div class="bg-white border-t shadow-lg">
-      <BottomMenu
-        :orderItems="orderItems"
-        :currentDate="currentDate"
-        :currentTime="currentTime" 
-      /> 
-    </div>
+    <!-- Bottom Menu  -->
+    <BottomMenu
+      :orderItems="orderItems"
+      :currentDate="currentDate"
+      :currentTime="currentTime" 
+    /> 
   </div>
 </template>
 
@@ -208,7 +201,5 @@ function voidOrder() {
 
 
 <style scoped>
-.overflow-hidden {
-  overflow: hidden;
-}
+
 </style>

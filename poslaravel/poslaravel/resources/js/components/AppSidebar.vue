@@ -17,7 +17,7 @@ const selectCategory = (id: number) => {
 
 <template>
 
-    <aside class="w-60 bg-[#FFFFFF] border-r flex flex-col text-[#2e3c2f]">
+    <aside class="w-60 bg-[#FFFFFF] flex flex-col text-[#2e3c2f]">
         <div class="p-4">
             <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
             

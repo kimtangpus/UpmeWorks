@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav class="bg-white shadow-md border-t border-grey-200 fixed bottom-[32px] left-0 w-full z-40 flex justify-center space-x-8 text-(--dark-green) p-4">
+        <nav class="bg-white shadow-md border-grey-200 fixed bottom-[32px] left-0 w-full z-40 flex justify-center space-x-8 text-(--dark-green) p-4">
             <BottomMenuButton icon="fas fa-circle-play" label="Start Day" />
             <BottomMenuButton icon="fas fa-stop" label="End Day" />
             <BottomMenuButton icon="fas fa-file-invoice-dollar" label="Show Orders" />

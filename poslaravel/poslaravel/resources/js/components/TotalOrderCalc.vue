@@ -1,113 +1,132 @@
 <template>
 
-    <section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f] h-[calc(100vh-120px)]">
+    <section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f] h-full">
 
-        <div class="text-xs flex justify-between mb-2 text-gray-600">
-        <span>Transaction No.: 000000000000</span>
-        <span>Table No.: 25</span>
+        <div class="text-sm text-(--dark-green) font-medium flex justify-between mb-2">
+            <span>Transaction No.: 000000000000</span>
+            <span>Table No.: 25</span>
         </div>
 
         <div class="bg-gray-100 p-4 rounded-xl shadow-inner flex flex-col gap-4 flex-1 min-h-0">
 
-            <div class="shrink-0 bg-black text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
+            <div class="shrink-0 bg-[#343434] text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
                 ₱{{ payableAmount.toFixed(2) }}
             </div>
 
+            <!-- ordered items -->
             <div class="flex-1 overflow-y-auto space-y-2 pr-2 min-h-0">
-                <div
-                v-for="(item, idx) in orderItems"
-                :key="item.id"
-                class="border rounded-xl shadow p-3 bg-[#f6fbf2] "
-                >
-                <div class="flex justify-between items-center">
-                    <div class="font-semibold text-green-700">{{ item.name }}</div>
-                    <div class="text-sm font-bold text-[#87b46f] ">
-                    ₱{{ (item.price * item.quantity).toFixed(2) }}
+                <div v-for="(item, idx) in orderItems" :key="item.id"
+                    class="bg-white rounded-xl shadow p-3 bg-[#f6fbf2] flex flex-col gap-2">
+                    <!-- Top Row  -->
+                    <div class="flex justify-between items-start">
+                        <div class="font-semibold text-(--dark-green) text-lg font-bold">{{ item.name }}</div>
+                        <div class="flex items-center gap-2">
+                            <button @click="$emit('remove-item', idx)"
+                                class="text-gray-500 hover:text-blue-600 focus:outline-none" title="Remove item">
+                                <i class="fas fa-pencil text-lg"></i>
+                            </button>
+                            <button @click="$emit('remove-item', idx)"
+                                class="text-gray-500 hover:text-blue-600 focus:outline-none" title="Remove item">
+                                <i class="fas fa-certificate text-lg"></i>
+                            </button>
+                            <button @click="$emit('remove-item', idx)"
+                                class="text-gray-500 hover:text-blue-600 focus:outline-none" title="Remove item">
+                                <i class="fas fa-tag text-lg"></i>
+                            </button>
+                            <button @click="$emit('remove-item', idx)"
+                                class="text-gray-500 hover:text-red-600 focus:outline-none" title="Remove item">
+                                <i class="fas fa-trash text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: Quantity Controls -->
+                    <div class="flex items-center justify-between text-sm text-gray-600">
+                        <div class="flex items-center gap-2 text-[--dark-green] font-bold">
+                            <button @click="$emit('update-item-qty', item, item.quantity - 1)"
+                                :disabled="item.quantity === 1" class="w-6 h-6 flex items-center justify-center rounded
+                                    bg-gray-200 hover:bg-gray-300
+                                    disabled:opacity-50 disabled:cursor-not-allowed" title="Decrease">
+                                −
+                            </button>
+
+                            <span class="w-6 text-center">{{ item.quantity }}</span>
+
+                            <button @click="$emit('update-item-qty', item, item.quantity + 1)"
+                                class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded"
+                                title="Increase">
+                                +
+                            </button>
+                        </div>
+
+
+                        <!-- Price moved here -->
+                        <div class="text-sm font-bold text-(--button-green)">
+                            ₱{{ (item.price * item.quantity).toFixed(2) }}
+                        </div>
                     </div>
                 </div>
-
-                <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
-                    <div class="flex items-center gap-2">
-                    <button
-                        @click="item.quantity > 1 && $emit('update-item-qty', item, item.quantity - 1)"
-                        class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
-                    >−</button>
-                    <span class="w-6 text-center">{{ item.quantity }}</span>
-                    <button
-                        @click="$emit('update-item-qty', item, item.quantity + 1)"
-                        class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 "
-                    >+</button>
-                    </div>
-                    <button @click="$emit('remove-item', idx)" class=" text-xs hover:underline">🗑️</button>
-                </div>
-                </div>
             </div>
-            
+
+
         </div>
 
-        <div class="bg-[#cde4b2] text-sm rounded-xl p-4 mt-4 space-y-2 shadow-inner text-green-700">
-            <div class="flex justify-between">
-                <div class="font-semibold">Total:</div>
-                <div></div>
-            </div>
-            <div class="flex justify-between">
-                <span>Discount:</span>
-                <span>₱{{ discountTotal.toFixed(2) }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Sub total:</span>
-                <span>₱{{ subtotal.toFixed(2) }}</span>
-            </div>
-            <div class="flex justify-between mt-3">
-                <div class="font-semibold">Payments:</div>
-                <div></div>
-            </div>
-            <div class="flex justify-between">
-                <span>Service Charge:</span>
-                <span>₱{{ serviceCharge.toFixed(2) }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Other Charges:</span>
-                <span>₱0.00</span>
+        <div class="bg-(--light-green) rounded-xl p-4 mt-4 shadow-inner text-(--dark-green)">
+            <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                <div class="flex justify-between">
+                    <span class="font-bold text-md">Total:</span>
+                    <span class="font-medium text-md">₱{{ payableAmount.toFixed(2) }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="font-bold text-md">Payments:</span>
+                    <span class="font-medium text-md">₱0.00</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="font-bold text-md">Discount:</span>
+                    <span class="font-medium text-md">₱{{ discountTotal.toFixed(2) }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="font-bold text-md">Service Charge:</span>
+                    <span class="font-medium text-md">₱{{ serviceCharge.toFixed(2) }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="font-bold text-md">Subtotal:</span>
+                    <span class="font-medium text-md">₱{{ subtotal.toFixed(2) }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="font-bold text-md">Other Charges:</span>
+                    <span class="font-medium text-md">₱0.00</span>
+                </div>
             </div>
         </div>
+
+
 
         <div class="flex justify-between gap-2 mt-4">
-            <button
-                class="flex-1 bg-(--button-green) text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                @click="$emit('void-order')"
-            >
+            <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                @click="$emit('void-order')">
                 Void
             </button>
-            <button
-                class="flex-1 bg-(--button-green) text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-            >
+            <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]">
                 Send Order Slip
             </button>
-            <button
-                class="flex-1 bg-(--button-green) text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                @click="$emit('proceed')"
-            >
+            <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                @click="$emit('proceed')">
                 Print Bill
             </button>
         </div>
     </section>
 
-    <PaymentModal
-        v-if="showPaymentModal"
-        :grandTotal="payableAmount"
-        @close="showPaymentModal = false"
-        @payment-confirmed="$emit('payment-confirmed', $event)"
-    />
+    <PaymentModal v-if="showPaymentModal" :grandTotal="payableAmount" @close="showPaymentModal = false"
+        @payment-confirmed="$emit('payment-confirmed', $event)" />
 
-    <BillOut
-        v-if="showBillOut"
-        :orderItems="orderItems"
-        :paidAmount="paidAmount"
-        :changeAmount="changeAmount"
-        @close="showBillOut = false"
-        @confirm-payment="$emit('confirm')"
-    />
+    <BillOut v-if="showBillOut" :orderItems="orderItems" :paidAmount="paidAmount" :changeAmount="changeAmount"
+        @close="showBillOut = false" @confirm-payment="$emit('confirm')" />
 
 </template>
 
@@ -116,9 +135,18 @@ import { ref } from 'vue'
 import BillOut from '@/components/BillOut.vue'
 import PaymentModal from '@/components/PaymentModal.vue'
 
+interface OrderItem {
+    id: number
+    name: string
+    price: number
+    quantity: number
+    discount: number
+    total: number
+}
+
 const props = defineProps({
     orderItems: {
-        type: Array,
+        type: Array as () => OrderItem[],
         required: true
     },
     subtotal: {
@@ -149,7 +177,7 @@ const paidAmount = ref(0)
 const changeAmount = ref(0)
 
 defineEmits<{
-    (e: 'update-item-qty', item: any, newQty: number): void
+    (e: 'update-item-qty', item: OrderItem, newQty: number): void
     (e: 'remove-item', index: number): void
     (e: 'void-order'): void
     (e: 'proceed'): void
