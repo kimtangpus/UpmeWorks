@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen bg-[#f2f7f1]">
+  <div class="flex h-screen bg-[#f2f7f1] pb-2">
     <!-- Sidebar -->
     <AppSidebar
       :categories="categories"
@@ -16,7 +16,7 @@
       <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Main Content -->
         <main class="flex-1 flex gap-4 p-4 overflow-hidden mb-[132px]">
-          <ProdcutListings
+          <ProductListings
             :allProducts="allProducts"
             v-model:searchQuery="searchQuery"
             @add-to-order="addToOrder"
@@ -55,8 +55,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import AppSidebar from '@/components/AppSidebar.vue'
-import BottomMenu from '@/components/ui/BottomMenu.vue'
-import ProdcutListings from '@/components/ProductListings.vue'
+import BottomMenu from '@/components/BottomMenu.vue'
+import ProductListings from '@/components/ProductListings.vue'
 import TotalOrderCalc from '@/components/TotalOrderCalc.vue'
 import AppHeader from '@/components/AppHeader.vue'
 

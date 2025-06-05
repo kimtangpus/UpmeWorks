@@ -30,12 +30,13 @@
                                 class="text-gray-500 hover:text-blue-600 focus:outline-none" title="Remove item">
                                 <i class="fas fa-certificate text-lg"></i>
                             </button>
-                            <button @click="$emit('remove-item', idx)"
-                                class="text-gray-500 hover:text-blue-600 focus:outline-none" title="Remove item">
+                            <button @click="showOverridePriceModal = true"
+                                class="text-gray-500 hover:text-yellow-600 focus:outline-none cursor-pointer"
+                                title="Override Item Price">
                                 <i class="fas fa-tag text-lg"></i>
                             </button>
                             <button @click="$emit('remove-item', idx)"
-                                class="text-gray-500 hover:text-red-600 focus:outline-none" title="Remove item">
+                                class="text-gray-500 hover:text-red-600 focus:outline-none cursor-pointer" title="Remove item">
                                 <i class="fas fa-trash text-lg"></i>
                             </button>
                         </div>
@@ -119,6 +120,11 @@
         </div>
     </section>
 
+    <OverridePriceModal
+        :show="showOverridePriceModal"
+        @close="showOverridePriceModal = false"
+    />
+
     <PaymentModal v-if="showPaymentModal" :grandTotal="payableAmount" @close="showPaymentModal = false"
         @payment-confirmed="$emit('payment-confirmed', $event)" />
 
@@ -130,6 +136,7 @@
 import { ref } from 'vue'
 import BillOut from '@/components/BillOut.vue'
 import PaymentModal from '@/components/PaymentModal.vue'
+import OverridePriceModal from './ui/modals/OverridePriceModal.vue'
 
 interface OrderItem {
     id: number
@@ -169,6 +176,7 @@ const props = defineProps({
 
 const showPaymentModal = ref(false)
 const showBillOut = ref(false)
+const showOverridePriceModal = ref(false)
 const paidAmount = ref(0)
 const changeAmount = ref(0)
 

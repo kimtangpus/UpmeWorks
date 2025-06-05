@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import BottomMenuButton from './bottom-menu/BottomMenuButton.vue';
+import BottomMenuButton from '@/components/ui/bottom-menu/BottomMenuButton.vue';
 
 defineProps({
     currentTime: String,
