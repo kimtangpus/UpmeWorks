@@ -96,8 +96,8 @@
 
 :root {
   /* UPme Colors */
-  --light-green: #CAE0BC;
-  --dark-green: #094C2D;
+  --upme-light-green: #CAE0BC;
+  --upme-dark-green: #094C2D;
   --button-green: #81A969;
   --selected-button-green: #779C60;
 

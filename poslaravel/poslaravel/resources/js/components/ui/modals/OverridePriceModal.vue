@@ -20,7 +20,7 @@ const handleClose = () => {
                 <div class="flex items-center justify-between p-4 border-b border-gray-200" v-motion
                     :initial="{ opacity: 0, y: -20 }"
                     :enter="{ opacity: 1, y: 0, transition: { duration: 300, delay: 100 } }">
-                    <div class="flex items-center text-(--dark-green) gap-3">
+                    <div class="flex items-center text-(--upme-dark-green) gap-3">
                         <i class="text-[24px] fas fa-certificate"></i>
                         <div>
                             <h3 class="text-lg font-semibold">
@@ -61,7 +61,7 @@ const handleClose = () => {
 
                         <div class="flex items-center gap-2">
                             <input type="number" id="price"
-                                class="bg-white text-center placeholder:text-center border-2 border-gray-200 text-5xl rounded-xl font-bold text-(--dark-green) focus:ring-gray-600 focus:border-gray-200 w-full h-2xl py-6 px-4"
+                                class="bg-white text-center placeholder:text-center border-2 border-gray-200 text-5xl rounded-xl font-bold text-(--upme-dark-green) focus:ring-gray-600 focus:border-gray-200 w-full h-2xl py-6 px-4"
                                 placeholder="0.00" step="0.25" min="0" />
                         </div>
 

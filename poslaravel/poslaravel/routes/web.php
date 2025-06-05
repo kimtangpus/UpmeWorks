@@ -19,7 +19,11 @@ require __DIR__.'/auth.php';
 
 Route::get('/', function () {
     return Inertia::render('Pos');
-});
+})->name('Pos');
+
+Route::get('/show-orders', function () {
+    return Inertia::render('ShowAllTables');
+})->name('show-orders');
 
 
 

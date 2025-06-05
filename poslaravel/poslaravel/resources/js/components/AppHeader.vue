@@ -1,7 +1,21 @@
+<script setup lang="ts">
+import { usePage } from '@inertiajs/vue3'
+import ButtonIcon from './ui/buttons/ButtonIcon.vue';
+
+const page = usePage()
+
+function back() {
+  window.history.back()
+}
+
+</script>
+
 <template>
-  <header class="bg-(--light-green) shadow-sm p-4">
+  <header class="bg-(--upme-light-green) shadow-sm p-4">
     <div class="flex justify-between items-center">
-      <div class="flex items-center gap-4 text-(--dark-green)">
+
+      <!-- for main POS screen -->
+      <div v-if="page.url === '/'" class="flex items-center gap-4 text-(--upme-dark-green)">
         <div>
           <button class="px-4 py-2 bg-(--button-green) text-white rounded-lg hover:bg-[#7ca460] cursor-pointer">
             Add Customer Information
@@ -9,42 +23,26 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-4 text-[var(--dark-green)]">        
-        <div class="p-2 rounded-lg transition hover:bg-white cursor-pointer relative group" title="Calculator">
-          <i class="fas fa-calculator text-2xl"></i>
-          <!-- Tooltip below -->
-          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 
-           bg-white text-(--dark-green) text-xs rounded whitespace-nowrap
-           opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
-            Calculator
-          </div>
+      <!-- for show-orders and transfer-table -->
+      <div v-if="page.url === '/show-orders'" class="flex items-center gap-4 text-(--upme-dark-green)">
+        <div class="p-2 rounded-lg transition cursor-pointer relative group">
+          <ButtonIcon icon="fas fa-chevron-left" title="Back" @click="back" class="hover:bg-gray-100 text-2xl" />
         </div>
 
-        <div class="p-2 rounded-lg transition hover:bg-white cursor-pointer relative group" title="Calculator">
-          <i class="fas fa-sack-dollar text-2xl"></i>
-          <!-- Tooltip below -->
-          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 
-           bg-white text-(--dark-green) text-xs rounded whitespace-nowrap
-           opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
-            Other Charges
-          </div>
-        </div>
+        <span class="text-base font-semibold">
+          Select Vacant Table
+        </span>
+      </div>
 
-        <div class="p-2 rounded-lg transition hover:bg-white cursor-pointer relative group" title="Calculator">
-          <i class="fas fa-arrow-right-from-bracket text-2xl"></i>
-          <!-- Tooltip below -->
-          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 
-           bg-white text-(--dark-green) text-xs rounded whitespace-nowrap
-           opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
-            Leave
-          </div>
-        </div>
+      <div class="flex items-center gap-4 text-[var(--upme-dark-green)] text-2xl">
+        <ButtonIcon icon="fas fa-calculator" title="Calculator" class="hover:bg-gray-100" />
+
+        <ButtonIcon icon="fas fa-sack-dollar" title="Other Charges" class="hover:bg-gray-100" />
+
+        <ButtonIcon icon="fas fa-arrow-right-from-bracket" title="Leave" class="hover:bg-gray-100" />
+
       </div>
 
     </div>
   </header>
 </template>
-
-<script setup> 
-
-</script>

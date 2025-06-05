@@ -2,7 +2,7 @@
   <div
     @click="$emit('add-to-order', product)"
     class="bg-white rounded-2xl shadow-md border border-transparent 
-           hover:bg-gray-300 active:border-[var(--dark-green)] transition flex flex-col justify-between cursor-pointer"
+           hover:bg-gray-300 active:border-[var(--upme-dark-green)] transition flex flex-col justify-between cursor-pointer"
   >
     <div class="w-full h-32 bg-gray-100 rounded-t-xl mb-3 flex items-center justify-center overflow-hidden">
       <img
@@ -17,7 +17,7 @@
     <div class="mx-4 mb-4">
       <div class="flex justify-between items-center w-full">
         <h3
-          class="font-semibold text-base truncate text-(--dark-green)"
+          class="font-semibold text-base truncate text-(--upme-dark-green)"
           :title="product.name"
           >
           {{ product.name }}

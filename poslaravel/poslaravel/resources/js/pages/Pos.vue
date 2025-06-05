@@ -45,21 +45,21 @@
   <!-- Bottom Menu - Fixed at bottom -->
   <BottomMenu
     :orderItems="orderItems"
-    :currentDate="currentDate"
-    :currentTime="currentTime"
     class="fixed bottom-0 left-0 w-full z-50"
   />
+
+  <CopyrightFooter />
 </template>
 
 
 <script setup lang="ts">
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
+import { ref, computed } from 'vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import BottomMenu from '@/components/BottomMenu.vue'
 import ProductListings from '@/components/ProductListings.vue'
 import TotalOrderCalc from '@/components/TotalOrderCalc.vue'
 import AppHeader from '@/components/AppHeader.vue'
-
+import CopyrightFooter from '@/components/ui/footer/CopyrightFooter.vue'
 
 const props = defineProps({
   categories: Array
@@ -67,49 +67,12 @@ const props = defineProps({
 
 const searchQuery = ref('')
 const selectedCategoryId = ref(null)
-const currentDate = ref('')
-const currentTime = ref('')
-const categoryContainer = ref(null)
 const showPaymentModal = ref(false)
 const showBillOut = ref(false)
 const orderItems = ref([])
 const paidAmount = ref(0)
 const changeAmount = ref(0)
 
-onMounted(() => {
-  updateDateTime()
-  const interval = setInterval(updateDateTime, 1000)
-  onBeforeUnmount(() => clearInterval(interval))
-})
-
-function updateDateTime() {
-  const now = new Date()
-
-  // Format: Wed Apr 23
-  const date = now.toLocaleDateString('en-US', {
-    weekday: 'short',  // Wed
-    month: 'short',    // Apr
-    day: 'numeric'     // 23
-  })
-
-  const time = now.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true       // ensures AM/PM format
-  })
-
-  currentDate.value = date
-  currentTime.value = time
-}
-
-function scrollCategories(direction) {
-  if (!categoryContainer.value) return
-  const scrollAmount = 150
-  categoryContainer.value.scrollBy({
-    left: direction === 'left' ? -scrollAmount : scrollAmount,
-    behavior: 'smooth'
-  })
-}
 
 function addToOrder(product) {
   const idx = orderItems.value.findIndex(item => item.id === product.id)
