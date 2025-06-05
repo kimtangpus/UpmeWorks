@@ -1,20 +1,21 @@
 <template>
-
-    <section class="w-1/3 bg-white p-4 rounded-2xl shadow flex flex-col text-[#2e3c2f] h-full">
-
-        <div class="text-sm text-(--dark-green) font-medium flex justify-between mb-2">
-            <span>Transaction No.: 000000000000</span>
-            <span>Table No.: 25</span>
-        </div>
-
-        <div class="bg-gray-100 p-4 rounded-xl shadow-inner flex flex-col gap-4 flex-1 min-h-0">
-
-            <div class="shrink-0 bg-[#343434] text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
-                ₱{{ payableAmount.toFixed(2) }}
+    <section class="flex flex-col h-full bg-white rounded-2xl shadow w-full max-w-md">
+        <div class="flex-shrink-0 p-4">
+            <div class="text-sm text-(--dark-green) font-medium flex justify-between mb-2">
+                <span>Transaction No.: 000000000000</span>
+                <span>Table No.: 25</span>
             </div>
 
-            <!-- ordered items -->
-            <div class="flex-1 overflow-y-auto space-y-2 pr-2 min-h-0">
+            <div class="bg-gray-100 p-4 rounded-xl shadow-inner">
+                <div class="bg-[#343434] text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
+                    ₱{{ payableAmount.toFixed(2) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- ordered items -->
+        <div class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-2">
                 <div v-for="(item, idx) in orderItems" :key="item.id"
                     class="bg-white rounded-xl shadow p-3 bg-[#f6fbf2] flex flex-col gap-2">
                     <!-- Top Row  -->
@@ -59,66 +60,62 @@
                             </button>
                         </div>
 
-
-                        <!-- Price moved here -->
                         <div class="text-sm font-bold text-(--button-green)">
                             ₱{{ (item.price * item.quantity).toFixed(2) }}
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
 
-        <div class="bg-(--light-green) rounded-xl p-4 mt-4 shadow-inner text-(--dark-green)">
-            <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-                <div class="flex justify-between">
-                    <span class="font-bold text-md">Total:</span>
-                    <span class="font-medium text-md">₱{{ payableAmount.toFixed(2) }}</span>
-                </div>
+        <div class="flex-shrink-0 p-4">
+            <div class="bg-(--light-green) rounded-xl p-4 shadow-inner text-(--dark-green)">
+                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-md">Total:</span>
+                        <span class="font-medium text-md">₱{{ payableAmount.toFixed(2) }}</span>
+                    </div>
 
-                <div class="flex justify-between">
-                    <span class="font-bold text-md">Payments:</span>
-                    <span class="font-medium text-md">₱0.00</span>
-                </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-md">Payments:</span>
+                        <span class="font-medium text-md">₱0.00</span>
+                    </div>
 
-                <div class="flex justify-between">
-                    <span class="font-bold text-md">Discount:</span>
-                    <span class="font-medium text-md">₱{{ discountTotal.toFixed(2) }}</span>
-                </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-md">Discount:</span>
+                        <span class="font-medium text-md">₱{{ discountTotal.toFixed(2) }}</span>
+                    </div>
 
-                <div class="flex justify-between">
-                    <span class="font-bold text-md">Service Charge:</span>
-                    <span class="font-medium text-md">₱{{ serviceCharge.toFixed(2) }}</span>
-                </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-md">Service Charge:</span>
+                        <span class="font-medium text-md">₱{{ serviceCharge.toFixed(2) }}</span>
+                    </div>
 
-                <div class="flex justify-between">
-                    <span class="font-bold text-md">Subtotal:</span>
-                    <span class="font-medium text-md">₱{{ subtotal.toFixed(2) }}</span>
-                </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-md">Subtotal:</span>
+                        <span class="font-medium text-md">₱{{ subtotal.toFixed(2) }}</span>
+                    </div>
 
-                <div class="flex justify-between">
-                    <span class="font-bold text-md">Other Charges:</span>
-                    <span class="font-medium text-md">₱0.00</span>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-md">Other Charges:</span>
+                        <span class="font-medium text-md">₱0.00</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-
-
-        <div class="flex justify-between gap-2 mt-4">
-            <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                @click="$emit('void-order')">
-                Void
-            </button>
-            <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]">
-                Send Order Slip
-            </button>
-            <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                @click="$emit('proceed')">
-                Print Bill
-            </button>
+            <div class="flex justify-between gap-2 mt-4">
+                <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('void-order')">
+                    Void
+                </button>
+                <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]">
+                    Send Order Slip
+                </button>
+                <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('proceed')">
+                    Print Bill
+                </button>
+            </div>
         </div>
     </section>
 
@@ -127,7 +124,6 @@
 
     <BillOut v-if="showBillOut" :orderItems="orderItems" :paidAmount="paidAmount" :changeAmount="changeAmount"
         @close="showBillOut = false" @confirm-payment="$emit('confirm')" />
-
 </template>
 
 <script setup lang="ts">

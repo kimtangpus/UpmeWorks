@@ -1,21 +1,26 @@
 <template>
-  <div class="flex flex-col h-screen bg-[#f2f7f1]">
-    <div class="flex flex-1 pb-40"> <!-- Add padding-bottom to account for fixed bottom menu -->
-      <!-- Sidebar -->
-      <AppSidebar
-        :categories="categories"
-        v-model:selectedCategoryId="selectedCategoryId"
-      />
-      <div class="flex-1 flex flex-col">
-        <!-- Header -->
-        <AppHeader />
-       
+  <div class="flex h-screen bg-[#f2f7f1]">
+    <!-- Sidebar -->
+    <AppSidebar
+      :categories="categories"
+      v-model:selectedCategoryId="selectedCategoryId"
+      class="flex-shrink-0"
+    />
+    
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <AppHeader class="flex-shrink-0" />
+      
+      <!-- Content Area -->
+      <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Main Content -->
-        <main class="flex-1 flex gap-4 p-4">
-          <MenuListings
+        <main class="flex-1 flex gap-4 p-4 overflow-hidden mb-[132px]">
+          <ProdcutListings
             :allProducts="allProducts"
             v-model:searchQuery="searchQuery"
             @add-to-order="addToOrder"
+            class="flex-1"
           />
           <TotalOrderCalc
             :orderItems="orderItems"
@@ -30,25 +35,28 @@
             @proceed="handleProceed"
             @payment-confirmed="handlePaymentConfirmed"
             @confirm="handleConfirm"
+            class="flex-shrink-0"
           />
         </main>
       </div>
     </div>
-    <!-- Bottom Menu  -->
-    <BottomMenu
-      :orderItems="orderItems"
-      :currentDate="currentDate"
-      :currentTime="currentTime" 
-    /> 
   </div>
+
+  <!-- Bottom Menu - Fixed at bottom -->
+  <BottomMenu
+    :orderItems="orderItems"
+    :currentDate="currentDate"
+    :currentTime="currentTime"
+    class="fixed bottom-0 left-0 w-full z-50"
+  />
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import BottomMenu from '@/components/ui/BottomMenu.vue'
-import MenuListings from '@/components/MenuListings.vue'
+import ProdcutListings from '@/components/ProductListings.vue'
 import TotalOrderCalc from '@/components/TotalOrderCalc.vue'
 import AppHeader from '@/components/AppHeader.vue'
 

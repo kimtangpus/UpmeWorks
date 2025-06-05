@@ -16,28 +16,25 @@ const selectCategory = (id: number) => {
 </script>
 
 <template>
-
-    <aside class="w-60 bg-[#FFFFFF] flex flex-col text-[#2e3c2f]">
-        <div class="p-4">
+    <aside class="w-60 bg-white flex flex-col h-[calc(100vh-32px)]">
+        <div class="p-4 flex-shrink-0">
             <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
-            
-            <div class="h-150 overflow-y-auto">
-                <div class="space-y-2">
-                    <CategoryButton
-                        v-for="category in categories"
-                        :key="category.id"
-                        :label="category.name"
-                        @click="selectCategory(category.id)"
-                        :class="[
-                            'w-full text-left px-4 py-2 rounded-lg font-semibold',
-                            selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
-                        ]"
-                        :isActive="selectedCategoryId === category.id"
-                    />
-                </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto px-4">
+            <div class="space-y-2">
+                <CategoryButton
+                    v-for="category in categories"
+                    :key="category.id"
+                    :label="category.name"
+                    @click="selectCategory(category.id)"
+                    :class="[
+                        'w-full text-left px-4 py-2 rounded-lg font-semibold',
+                        selectedCategoryId === category.id ? 'bg-[#c9e4b3]' : 'hover:bg-[#dcedc8]'
+                    ]"
+                    :isActive="selectedCategoryId === category.id"
+                />
             </div>
         </div>
     </aside>
-
-
 </template>
