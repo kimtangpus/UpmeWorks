@@ -11,17 +11,12 @@ const { apply: modalMotion } = useMotion()
 </script>
 
 <template>
-    <Transition name="fade">
-        <div v-if="show"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            @click="emit('closeModal')"
-            v-motion
-            :initial="{ opacity: 0 }"
+    <Transition>
+        <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            @click="emit('closeModal')" v-motion :initial="{ opacity: 0 }"
             :enter="{ opacity: 1, transition: { duration: 200 } }"
             :leave="{ opacity: 0, transition: { duration: 200 } }">
-            <div class="relative w-full max-w-md max-h-[90vh] bg-white rounded-lg shadow-lg" 
-                @click.stop
-                v-motion
+            <div class="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-lg shadow-lg" @click.stop v-motion
                 :initial="{ opacity: 0, y: 20 }"
                 :enter="{ opacity: 1, y: 0, transition: { duration: 300, type: 'spring', stiffness: 300 } }"
                 :leave="{ opacity: 0, y: 20, transition: { duration: 200 } }">
@@ -41,14 +36,4 @@ const { apply: modalMotion } = useMotion()
     </Transition>
 </template>
 
-<style>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3s ease;
-}
 
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-</style>
