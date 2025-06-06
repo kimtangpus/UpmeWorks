@@ -10,7 +10,7 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Header -->
-      <AppHeader class="flex-shrink-0" />
+      <AppHeader />
       
       <!-- Content Area -->
       <div class="flex-1 flex flex-col overflow-hidden">
@@ -35,7 +35,6 @@
             @proceed="handleProceed"
             @payment-confirmed="handlePaymentConfirmed"
             @confirm="handleConfirm"
-            class="flex-shrink-0"
           />
         </main>
       </div>

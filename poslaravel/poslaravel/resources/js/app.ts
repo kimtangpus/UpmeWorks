@@ -6,6 +6,7 @@ import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
+import { MotionPlugin } from '@vueuse/motion';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
@@ -31,12 +32,14 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(MotionPlugin)
             .mount(el);
     },
     progress: {
         color: '#4B5563',
     },
 });
+
 
 // This will set light / dark mode on page load...
 initializeTheme();

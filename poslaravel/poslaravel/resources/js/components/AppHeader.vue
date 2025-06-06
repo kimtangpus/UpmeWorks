@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3'
 import ButtonIcon from './ui/buttons/ButtonIcon.vue';
+import SimpleButton from './ui/buttons/SimpleButton.vue';
 
 const page = usePage()
 
@@ -16,11 +17,9 @@ function back() {
 
       <!-- for main POS screen -->
       <div v-if="page.url === '/'" class="flex items-center gap-4 text-(--upme-dark-green)">
-        <div>
-          <button class="px-4 py-2 bg-(--button-green) text-white rounded-lg hover:bg-[#7ca460] cursor-pointer">
-            Add Customer Information
-          </button>
-        </div>
+        <SimpleButton 
+          class="px-4 py-2 bg-(--button-green) text-white rounded-lg hover:bg-[#7ca460] cursor-pointer"
+          text="Add Customer Information" />
       </div>
 
       <!-- for show-orders and transfer-table -->

@@ -5,19 +5,13 @@
             <BottomMenuButton icon="fas fa-circle-play" label="Start Day" />
             <BottomMenuButton icon="fas fa-stop" label="End Day" />
             <BottomMenuButton href="/show-orders" icon="fas fa-file-invoice-dollar" label="Show Orders" />
-            <BottomMenuButton 
-                icon="fas fa-percent" 
-                label="Apply Discount"
-                @click="showApplyDiscountModal = true" />
+            <BottomMenuButton icon="fas fa-percent" label="Apply Discount" @click="showApplyDiscountModal = true" />
             <BottomMenuButton icon="fas fa-cash-register" label="Bill Out" />
-            
+
             <!-- change href of this when functionality is added -->
-            <BottomMenuButton 
-                href="/show-orders" 
-                icon="fas fa-arrow-down-up-across-line" 
-                label="Transfer Table"
-            />
-            <BottomMenuButton icon="fas fa-file-invoice-dollar" label="Refunds" />
+            <BottomMenuButton href="/show-orders" icon="fas fa-arrow-down-up-across-line" label="Transfer Table" />
+            <BottomMenuButton icon="fas fa-file-invoice-dollar" label="Refunds" @click="showRefundListModal = true" />
+
             <BottomMenuButton icon="fas fa-divide" label="Split Bill" />
             <BottomMenuButton icon="fas fa-print" label="Print X-Report" />
             <BottomMenuButton icon="fas fa-print" label="Print Z-Report" />
@@ -26,9 +20,9 @@
         </nav>
 
 
-        <ApplyDiscountModal 
-            :show="showApplyDiscountModal" 
-            @close="showApplyDiscountModal = false" />
+        <ApplyDiscountModal :show="showApplyDiscountModal" @close="showApplyDiscountModal = false" />
+
+        <RefundListModal :show="showRefundListModal" @close="showRefundListModal = false" />
     </div>
 </template>
 
@@ -36,7 +30,9 @@
 import { ref } from 'vue';
 import BottomMenuButton from '@/components/ui/bottom-menu/BottomMenuButton.vue';
 import ApplyDiscountModal from './ui/modals/ApplyDiscountModal.vue';
+import RefundListModal from './ui/modals/RefundListModal.vue';
 
 const showApplyDiscountModal = ref(false);
+const showRefundListModal = ref(false);
 
 </script>

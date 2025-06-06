@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ModalTemplate from './ModalTemplate.vue';
+import SimpleButton from '../buttons/SimpleButton.vue';
 
 const props = defineProps({
     show: Boolean
@@ -133,13 +134,14 @@ const handleClose = () => {
                         </div>
                     </div>
                     <div class="mt-6">
-                        <button type="submit"
+                        <SimpleButton 
+                            type="submit"
                             class="w-full text-white bg-(--button-green) hover:opacity-80 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center transition-all"
                             v-motion :initial="{ opacity: 0, y: 20 }"
                             :enter="{ opacity: 1, y: 0, transition: { duration: 300, delay: 300 } }"
-                            :hover="{ scale: 1.02 }" :tap="{ scale: 0.98 }">
-                            Apply Discount
-                        </button>
+                            :hover="{ scale: 1.02 }" :tap="{ scale: 0.98 }"
+                            text="Apply Discount"
+                        />
                     </div>
 
                 </form>

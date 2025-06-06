@@ -101,17 +101,21 @@
             </div>
 
             <div class="flex justify-between gap-2 mt-4">
-                <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('void-order')">
-                    Void
-                </button>
-                <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]">
-                    Send Order Slip
-                </button>
-                <button class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('proceed')">
-                    Print Bill
-                </button>
+                <SimpleButton 
+                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('void-order')"
+                    text="Void"/>
+                    
+                <SimpleButton 
+                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('void-order')"
+                    text="Send Order Slip"/>
+
+                <SimpleButton 
+                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('proceed')"
+                    text="Print Bill"/>
+
             </div>
         </div>
     </section>
@@ -131,6 +135,7 @@ import BillOut from '@/components/BillOut.vue'
 import PaymentModal from '@/components/PaymentModal.vue'
 import OverridePriceModal from './ui/modals/OverridePriceModal.vue'
 import ButtonIcon from './ui/buttons/ButtonIcon.vue'
+import SimpleButton from './ui/buttons/SimpleButton.vue'
 
 interface OrderItem {
     id: number
@@ -141,7 +146,7 @@ interface OrderItem {
     total: number
 }
 
-const props = defineProps({
+defineProps({
     orderItems: {
         type: Array as () => OrderItem[],
         required: true

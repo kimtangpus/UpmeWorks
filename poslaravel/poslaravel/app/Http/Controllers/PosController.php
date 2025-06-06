@@ -12,9 +12,6 @@ class PosController extends Controller
 {
     $categories = PosCategory::with('menus')->get();
 
-
-    logger($categories->toArray());
-
     return Inertia::render('Pos', [
         'categories' => $categories
     ]);
