@@ -1,5 +1,5 @@
 <template>
-    <section class="flex flex-col h-full bg-white rounded-2xl shadow w-full max-w-md">
+    <section class="flex flex-col border-l border-gray-200 h-full bg-white w-full max-w-md">
         <div class="flex-shrink-0 p-4">
             <div class="text-sm text-(--upme-dark-green) font-medium flex justify-between mb-2">
                 <span>Transaction No.: 000000000000</span>
@@ -101,20 +101,14 @@
             </div>
 
             <div class="flex justify-between gap-2 mt-4">
-                <SimpleButton 
-                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('void-order')"
-                    text="Void"/>
-                    
-                <SimpleButton 
-                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('void-order')"
-                    text="Send Order Slip"/>
+                <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('void-order')" text="Void" />
 
-                <SimpleButton 
-                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('proceed')"
-                    text="Print Bill"/>
+                <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('void-order')" text="Send Order Slip" />
+
+                <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    @click="$emit('proceed')" text="Print Bill" />
 
             </div>
         </div>

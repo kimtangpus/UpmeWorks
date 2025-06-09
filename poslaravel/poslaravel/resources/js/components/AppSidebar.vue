@@ -16,12 +16,12 @@ const selectCategory = (id: number) => {
 </script>
 
 <template>
-    <aside class="w-60 bg-white flex flex-col h-[calc(100vh-32px)]">
-        <div class="p-4 flex-shrink-0">
-            <img src="/servelogo.png" alt="Logo" class="h-20 mx-auto mb-4" />
+    <aside class="border-r border-gray-200 shadow w-60 bg-white flex flex-col h-[calc(100vh-32px)]">
+        <div class="flex-shrink-0">
+            <img src="/servelogo.png" alt="Logo" class="h-26 mx-auto mb-4" />
         </div>
         
-        <div class="flex-1 overflow-y-auto px-4">
+        <div class="flex-1 overflow-y-auto p-4">
             <div class="space-y-2">
                 <CategoryButton
                     v-for="category in categories"

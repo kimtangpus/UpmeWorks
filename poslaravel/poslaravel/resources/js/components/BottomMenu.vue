@@ -35,7 +35,10 @@
                 label="Reports" 
                 @click="showReportsModal = true" />
 
-            <BottomMenuButton icon="fas fa-clipboard" label="Back Office" />
+                <BottomMenuButton 
+                    icon="fas fa-clipboard" 
+                    label="Back Office"
+                    @click="showBackOfficePopover = true" />
         </nav>
 
 
@@ -48,6 +51,8 @@
         <SplitBillModal :show="showSplitBillModal" @close="showSplitBillModal = false" />
     
         <ReportsModal :show="showReportsModal" @close="showReportsModal = false" />
+
+        <BackOfficePopover :show="showBackOfficePopover" @close="showBackOfficePopover = false" />
     </div>
 </template>
 
@@ -59,11 +64,13 @@ import RefundListModal from './ui/modals/RefundListModal.vue';
 import ReportsModal from './ui/modals/ReportsModal.vue';
 import SplitBillModal from './ui/modals/SplitBillModal.vue';
 import BillOutModal from './ui/modals/BillOutModal.vue';
+import BackOfficePopover from './ui/popovers/BackOfficePopover.vue';
 
 const showApplyDiscountModal = ref(false);
 const showRefundListModal = ref(false);
 const showReportsModal = ref(false);
 const showSplitBillModal = ref(false);
 const showBillOutModal = ref(false);
+const showBackOfficePopover = ref(false);
 
 </script>

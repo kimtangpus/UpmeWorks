@@ -1,7 +1,7 @@
 <template>
-    <section class="flex flex-col h-full bg-[#F8FAF8] rounded-2xl shadow">
+    <section class="flex flex-col h-full bg-[#F8FAF8]">
         <!-- search bar header -->
-        <div class="flex justify-between items-center p-4 flex-shrink-0">
+        <div class="flex justify-between border-b border-gray-200 items-center p-4 flex-shrink-0 bg-white">
             <div class="relative w-1/2">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-search text-gray-400"></i>
@@ -9,7 +9,7 @@
                 <input :value="searchQuery"
                     @input="$emit('update:searchQuery', ($event.target as HTMLInputElement).value)" type="text"
                     placeholder="Search Menus"
-                    class="p-2 pl-10 border border-[#d0e0cd] rounded-xl w-full shadow-sm focus:outline-none text-[#2e3c2f]" />
+                    class="p-2 pl-10 border border-[#CDCDCD] rounded-xl w-full shadow-sm focus:outline-none text-[#A3A3A3] bg-[#FBFBFB]" />
             </div>
         </div>
 

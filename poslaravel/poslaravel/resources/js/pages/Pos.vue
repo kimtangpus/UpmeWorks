@@ -15,7 +15,7 @@
       <!-- Content Area -->
       <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Main Content -->
-        <main class="flex-1 flex gap-4 p-4 overflow-hidden mb-[132px]">
+        <main class="flex-1 flex overflow-hidden mb-[132px]">
           <ProductListings
             :allProducts="allProducts"
             v-model:searchQuery="searchQuery"
