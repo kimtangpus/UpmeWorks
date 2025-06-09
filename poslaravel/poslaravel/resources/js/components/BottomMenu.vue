@@ -10,12 +10,20 @@
 
             <!-- change href of this when functionality is added -->
             <BottomMenuButton href="/show-orders" icon="fas fa-arrow-down-up-across-line" label="Transfer Table" />
-            <BottomMenuButton icon="fas fa-file-invoice-dollar" label="Refunds" @click="showRefundListModal = true" />
+            <BottomMenuButton 
+                icon="fas fa-file-invoice-dollar" 
+                label="Refunds" 
+                @click="showRefundListModal = true" />
 
             <BottomMenuButton icon="fas fa-divide" label="Split Bill" />
             <BottomMenuButton icon="fas fa-print" label="Print X-Report" />
             <BottomMenuButton icon="fas fa-print" label="Print Z-Report" />
-            <BottomMenuButton icon="fas fa-file" label="Reports" />
+            
+            <BottomMenuButton 
+                icon="fas fa-file" 
+                label="Reports" 
+                @click="showReportsModal = true" />
+
             <BottomMenuButton icon="fas fa-clipboard" label="Back Office" />
         </nav>
 
@@ -23,6 +31,8 @@
         <ApplyDiscountModal :show="showApplyDiscountModal" @close="showApplyDiscountModal = false" />
 
         <RefundListModal :show="showRefundListModal" @close="showRefundListModal = false" />
+    
+        <ReportsModal :show="showReportsModal" @close="showReportsModal = false" />
     </div>
 </template>
 
@@ -31,8 +41,10 @@ import { ref } from 'vue';
 import BottomMenuButton from '@/components/ui/bottom-menu/BottomMenuButton.vue';
 import ApplyDiscountModal from './ui/modals/ApplyDiscountModal.vue';
 import RefundListModal from './ui/modals/RefundListModal.vue';
+import ReportsModal from './ui/modals/ReportsModal.vue';
 
 const showApplyDiscountModal = ref(false);
 const showRefundListModal = ref(false);
+const showReportsModal = ref(false);
 
 </script>
