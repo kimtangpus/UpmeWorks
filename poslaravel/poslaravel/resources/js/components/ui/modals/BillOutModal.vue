@@ -23,7 +23,7 @@ const handleClose = () => {
     <Teleport to="body">
         <ModalTemplate :show="show" @closeModal="handleClose">
             <template #header>
-                <ModalHeaderTemplate title="Total Payables" description="Settle your transaction" icon="fas fa-wallet" />
+                <ModalHeaderTemplate title="Total Payables" description="Settle your transaction" icon="fas fa-wallet" @close="handleClose" />
             </template>
             <template #body>
                 <div class="flex gap-4 px-6 py-4 h-[600px]">
