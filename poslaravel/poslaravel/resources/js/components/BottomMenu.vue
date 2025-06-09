@@ -15,7 +15,11 @@
                 label="Refunds" 
                 @click="showRefundListModal = true" />
 
-            <BottomMenuButton icon="fas fa-divide" label="Split Bill" />
+            <BottomMenuButton 
+                icon="fas fa-divide" 
+                label="Split Bill"
+                @click="showSplitBillModal = true" />
+
             <BottomMenuButton icon="fas fa-print" label="Print X-Report" />
             <BottomMenuButton icon="fas fa-print" label="Print Z-Report" />
             
@@ -31,6 +35,8 @@
         <ApplyDiscountModal :show="showApplyDiscountModal" @close="showApplyDiscountModal = false" />
 
         <RefundListModal :show="showRefundListModal" @close="showRefundListModal = false" />
+
+        <SplitBillModal :show="showSplitBillModal" @close="showSplitBillModal = false" />
     
         <ReportsModal :show="showReportsModal" @close="showReportsModal = false" />
     </div>
@@ -42,9 +48,11 @@ import BottomMenuButton from '@/components/ui/bottom-menu/BottomMenuButton.vue';
 import ApplyDiscountModal from './ui/modals/ApplyDiscountModal.vue';
 import RefundListModal from './ui/modals/RefundListModal.vue';
 import ReportsModal from './ui/modals/ReportsModal.vue';
+import SplitBillModal from './ui/modals/SplitBillModal.vue';
 
 const showApplyDiscountModal = ref(false);
 const showRefundListModal = ref(false);
 const showReportsModal = ref(false);
+const showSplitBillModal = ref(false);
 
 </script>
