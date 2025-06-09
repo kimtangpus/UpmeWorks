@@ -5,8 +5,15 @@
             <BottomMenuButton icon="fas fa-circle-play" label="Start Day" />
             <BottomMenuButton icon="fas fa-stop" label="End Day" />
             <BottomMenuButton href="/show-orders" icon="fas fa-file-invoice-dollar" label="Show Orders" />
-            <BottomMenuButton icon="fas fa-percent" label="Apply Discount" @click="showApplyDiscountModal = true" />
-            <BottomMenuButton icon="fas fa-cash-register" label="Bill Out" />
+            <BottomMenuButton 
+                icon="fas fa-percent" 
+                label="Apply Discount" 
+                @click="showApplyDiscountModal = true" />
+            
+                <BottomMenuButton 
+                icon="fas fa-cash-register" 
+                label="Bill Out"
+                @click="showBillOutModal = true" />
 
             <!-- change href of this when functionality is added -->
             <BottomMenuButton href="/show-orders" icon="fas fa-arrow-down-up-across-line" label="Transfer Table" />
@@ -34,6 +41,8 @@
 
         <ApplyDiscountModal :show="showApplyDiscountModal" @close="showApplyDiscountModal = false" />
 
+        <BillOutModal :show="showBillOutModal" @close="showBillOutModal = false" />
+
         <RefundListModal :show="showRefundListModal" @close="showRefundListModal = false" />
 
         <SplitBillModal :show="showSplitBillModal" @close="showSplitBillModal = false" />
@@ -49,10 +58,12 @@ import ApplyDiscountModal from './ui/modals/ApplyDiscountModal.vue';
 import RefundListModal from './ui/modals/RefundListModal.vue';
 import ReportsModal from './ui/modals/ReportsModal.vue';
 import SplitBillModal from './ui/modals/SplitBillModal.vue';
+import BillOutModal from './ui/modals/BillOutModal.vue';
 
 const showApplyDiscountModal = ref(false);
 const showRefundListModal = ref(false);
 const showReportsModal = ref(false);
 const showSplitBillModal = ref(false);
+const showBillOutModal = ref(false);
 
 </script>

@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-    <button :type="type" :title="text" :aria-label="text" class="p-2 rounded-lg transition cursor-pointer">
+    <button :type="type" :title="text" :aria-label="text" class="p-2 transition cursor-pointer">
         <i :class="[icon]" v-if="icon"></i>
         {{ text }}
     </button>
