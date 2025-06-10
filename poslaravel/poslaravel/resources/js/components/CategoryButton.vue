@@ -4,7 +4,7 @@
     :class="[
       isActive
         ? 'bg-[#f0f5ec] text-(--upme-dark-green)'
-        : 'bg-white text-green-700 hover:bg-[#f0f5ec]'
+        : 'bg-white text-(--upme-dark-green) hover:bg-[#f0f5ec]'
     ]"
     @click="toggleActive"
   >
