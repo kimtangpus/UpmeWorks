@@ -24,7 +24,7 @@ const { apply: modalMotion } = useMotion()
                     <slot name="header" @close="emit('closeModal')">Default Header</slot>
                 </header>
 
-                <div class="overflow-y-auto p-6">
+                <div class="overflow-y-auto p-4">
                     <slot name="body">Default Body</slot>
                 </div>
 
