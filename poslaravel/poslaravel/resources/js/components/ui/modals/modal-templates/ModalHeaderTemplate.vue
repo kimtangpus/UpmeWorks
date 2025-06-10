@@ -12,8 +12,6 @@ const emit = defineEmits(['close'])
 const handleClose = () => {
     emit('close')
 }
-
-
 </script>
 
 <template>

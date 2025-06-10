@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import ButtonIcon from '../buttons/ButtonIcon.vue';
 import SimpleButton from '../buttons/SimpleButton.vue';
-import CardWithInlineTitle from '../cards/CardWithInlineTitle.vue';
 import ReportViewer from '../reports/ReportViewer.vue';
 import ModalHeaderTemplate from './modal-templates/ModalHeaderTemplate.vue';
 import ModalTemplate from './modal-templates/ModalTemplate.vue';
+
 
 
 const props = defineProps({
