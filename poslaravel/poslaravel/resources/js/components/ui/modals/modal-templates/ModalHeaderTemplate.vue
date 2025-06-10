@@ -17,7 +17,7 @@ const handleClose = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-between p-4 border-b border-gray-200" v-motion
+    <div class="flex items-center justify-between p-4" v-motion
         :initial="{ opacity: 0, y: -20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 300, delay: 100 } }">
         <div class="flex items-center text-(--upme-dark-green) gap-3">
             <i class="text-[24px]" :class="icon"></i>

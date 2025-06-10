@@ -16,11 +16,11 @@ const { apply: modalMotion } = useMotion()
             @click="emit('closeModal')" v-motion :initial="{ opacity: 0 }"
             :enter="{ opacity: 1, transition: { duration: 200 } }"
             :leave="{ opacity: 0, transition: { duration: 200 } }">
-            <div class="relative w-full max-w-6xl bg-white rounded-lg shadow-lg" @click.stop v-motion
+            <div class="relative bg-white rounded-lg shadow-lg" @click.stop v-motion
                 :initial="{ opacity: 0, y: 20 }"
                 :enter="{ opacity: 1, y: 0, transition: { duration: 300, type: 'spring', stiffness: 300 } }"
                 :leave="{ opacity: 0, y: 20, transition: { duration: 200 } }">
-                <header class="border-none">
+                <header>
                     <slot name="header" @close="emit('closeModal')">Default Header</slot>
                 </header>
 
