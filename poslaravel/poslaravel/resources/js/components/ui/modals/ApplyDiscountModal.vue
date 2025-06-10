@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import ModalTemplate from './modal-templates/ModalTemplate.vue';
 import ModalHeaderTemplate from './modal-templates/ModalHeaderTemplate.vue';
 import SimpleButton from '../buttons/SimpleButton.vue';

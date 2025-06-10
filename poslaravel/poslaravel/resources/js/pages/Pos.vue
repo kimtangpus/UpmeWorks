@@ -40,7 +40,7 @@
         </main>        
       </div>
     </div>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap- 4">
       <BottomMenu
         :orderItems="orderItems"
         class="fixed bottom-0 left-0 w-full z-50"
