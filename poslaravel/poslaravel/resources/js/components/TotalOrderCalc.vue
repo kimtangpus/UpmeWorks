@@ -1,69 +1,76 @@
 <template>
-    <section class="flex flex-col border-l border-gray-200 h-full bg-white w-full max-w-md">
-        <div class="flex-shrink-0 p-4">
+    <!-- temp solution since ordered items doesn't want to be scrollable: overflow-y-auto -->
+    <section class="flex flex-col border-l border-gray-200 bg-white h-full max-h-md overflow-y-auto">
+        <div class="flex flex-col p-4">
             <div class="text-sm text-(--upme-dark-green) font-medium flex justify-between mb-2">
                 <span>Transaction No.: 000000000000</span>
                 <span>Table No.: 25</span>
             </div>
 
-            <div class="bg-gray-100 p-4 rounded-xl shadow-inner">
-                <div class="bg-[#343434] text-[#FFFFFF] text-center py-6 rounded-xl text-5xl font-bold shadow">
+            <div class="bg-gray-100 p-2 rounded shadow-inner flex flex-col">
+                <!-- Price Banner -->
+                <div class="bg-[#343434] text-[#FFFFFF] text-center py-6 rounded text-5xl font-bold shadow">
                     ₱{{ payableAmount.toFixed(2) }}
-                </div>
             </div>
-        </div>
 
-        <!-- ordered items -->
-        <div class="flex-1 overflow-y-auto p-4">
-            <div class="space-y-2">
-                <div v-for="(item, idx) in orderItems" :key="item.id"
-                    class="bg-white rounded-xl shadow p-3 bg-[#f6fbf2] flex flex-col gap-2">
+                <!-- ordered items -->
+                <div class="overflow-x-auto p-2 space-y-2 flex-1">
+                    <div class="space-y-2">
+                        <div v-for="(item, idx) in orderItems" :key="item.id"
+                            class="bg-white rounded shadow p-3 bg-[#f6fbf2] flex flex-col gap-2">
 
-                    <div class="flex justify-between items-start">
-                        <div class="font-semibold text-(--upme-dark-green) text-lg font-bold">{{ item.name }}</div>
-                        <div class="flex items-center text-lg">
+                            <div class="flex justify-between items-start">
+                                <div class="font-semibold text-(--upme-dark-green) text-lg font-bold">{{ item.name }}
+                                </div>
+                                <div class="flex items-center text-lg">
 
-                            <ButtonIcon icon="fas fa-pencil" title=""
-                                class="text-gray-500 hover:text-blue-600 focus:outline-none" />
+                                    <ButtonIcon icon="fas fa-pencil" title=""
+                                        class="text-gray-500 hover:text-blue-600 focus:outline-none" />
 
-                            <ButtonIcon icon="fas fa-certificate" title=""
-                                class="text-gray-500 hover:text-blue-600 focus:outline-none" />
+                                    <ButtonIcon icon="fas fa-certificate" title=""
+                                        class="text-gray-500 hover:text-blue-600 focus:outline-none" />
 
-                            <ButtonIcon icon="fas fa-tag" title="Override Price" @click="showOverridePriceModal = true"
-                                class="text-gray-500 hover:text-yellow-600 focus:outline-none" />
+                                    <ButtonIcon icon="fas fa-tag" title="Override Price"
+                                        @click="showOverridePriceModal = true"
+                                        class="text-gray-500 hover:text-yellow-600 focus:outline-none" />
 
-                            <ButtonIcon icon="fas fa-trash" title="Remove Item" @click="$emit('remove-item', idx)"
-                                class="text-gray-500 hover:text-red-600 focus:outline-none text-lg" />
+                                    <ButtonIcon icon="fas fa-trash" title="Remove Item"
+                                        @click="$emit('remove-item', idx)"
+                                        class="text-gray-500 hover:text-red-600 focus:outline-none text-lg" />
 
+                                </div>
+                            </div>
+
+                            <!-- Bottom Row: Quantity Controls -->
+                            <div class="flex items-center justify-between text-sm text-gray-600">
+                                <div class="flex items-center gap-2 text-[--upme-dark-green] font-bold">
+                                    <button @click="$emit('update-item-qty', item, item.quantity - 1)"
+                                        :disabled="item.quantity === 1" class="w-6 h-6 flex items-center justify-center rounded
+                                            bg-gray-200 hover:bg-gray-300
+                                            disabled:opacity-50 disabled:cursor-not-allowed" title="Decrease">
+                                        −
+                                    </button>
+
+                                    <span class="w-6 text-center">{{ item.quantity }}</span>
+
+                                    <button @click="$emit('update-item-qty', item, item.quantity + 1)"
+                                        class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded"
+                                        title="Increase">
+                                        +
+                                    </button>
+                                </div>
+
+                                <div class="text-sm font-bold text-(--button-green)">
+                                    ₱{{ (item.price * item.quantity).toFixed(2) }}
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Bottom Row: Quantity Controls -->
-                    <div class="flex items-center justify-between text-sm text-gray-600">
-                        <div class="flex items-center gap-2 text-[--upme-dark-green] font-bold">
-                            <button @click="$emit('update-item-qty', item, item.quantity - 1)"
-                                :disabled="item.quantity === 1" class="w-6 h-6 flex items-center justify-center rounded
-                                    bg-gray-200 hover:bg-gray-300
-                                    disabled:opacity-50 disabled:cursor-not-allowed" title="Decrease">
-                                −
-                            </button>
-
-                            <span class="w-6 text-center">{{ item.quantity }}</span>
-
-                            <button @click="$emit('update-item-qty', item, item.quantity + 1)"
-                                class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded"
-                                title="Increase">
-                                +
-                            </button>
-                        </div>
-
-                        <div class="text-sm font-bold text-(--button-green)">
-                            ₱{{ (item.price * item.quantity).toFixed(2) }}
-                        </div>
-                    </div>
                 </div>
             </div>
+
         </div>
+
 
         <div class="flex-shrink-0 p-4">
             <div class="bg-(--upme-light-green) rounded-xl p-4 shadow-inner text-(--upme-dark-green)">

@@ -1,13 +1,14 @@
 <template>
-  <div class="flex h-screen bg-[#f2f7f1] pb-2">
+  <div class="flex h-screen bg-[#f2f7f1] pb-[132px]">
     <!-- Sidebar -->
     <AppSidebar
       :categories="categories"
       v-model:selectedCategoryId="selectedCategoryId"
-      class="flex-shrink-0"
+      class="pb-[132px]"
     />
     
     <!-- Main Content Area -->
+    <!-- hard coded padding bottom since it's always overlapping, unsure if there's a better way -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Header -->
       <AppHeader />
@@ -15,7 +16,7 @@
       <!-- Content Area -->
       <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Main Content -->
-        <main class="flex-1 flex overflow-hidden mb-[132px]">
+        <main class="flex-1 flex overflow-hidden">
           <ProductListings
             :allProducts="allProducts"
             v-model:searchQuery="searchQuery"
@@ -36,18 +37,21 @@
             @payment-confirmed="handlePaymentConfirmed"
             @confirm="handleConfirm"
           />
-        </main>
+        </main>        
       </div>
     </div>
+    <div class="flex flex-col gap-4">
+      <BottomMenu
+        :orderItems="orderItems"
+        class="fixed bottom-0 left-0 w-full z-50"
+      />
+
+      <CopyrightFooter />
+    </div>    
   </div>
 
   <!-- Bottom Menu - Fixed at bottom -->
-  <BottomMenu
-    :orderItems="orderItems"
-    class="fixed bottom-0 left-0 w-full z-50"
-  />
 
-  <CopyrightFooter />
 </template>
 
 

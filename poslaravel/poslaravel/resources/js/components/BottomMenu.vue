@@ -1,7 +1,7 @@
 <template>
     <div>
         <nav
-            class="bg-white shadow-md border-grey-200 fixed bottom-[32px] left-0 w-full z-40 flex flex-wrap justify-center text-(--upme-dark-green) p-2 gap-4">
+            class="bg-white shadow-md border-grey-200 fixed bottom-[32px] left-0 w-full z-50 flex flex-wrap justify-center text-(--upme-dark-green) p-2 gap-4">
             <BottomMenuButton icon="fas fa-circle-play" label="Start Day" />
             <BottomMenuButton icon="fas fa-stop" label="End Day" />
             <BottomMenuButton href="/show-orders" icon="fas fa-file-invoice-dollar" label="Show Orders" />

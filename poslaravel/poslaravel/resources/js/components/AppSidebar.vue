@@ -17,7 +17,7 @@ const selectCategory = (id: number) => {
 
 <template>
     <aside class="border-r border-gray-200 shadow w-60 bg-white flex flex-col h-[calc(100vh-32px)]">
-        <div class="flex-shrink-0">
+        <div class="flex">
             <img src="/servelogo.png" alt="Logo" class="h-26 mx-auto mb-4" />
         </div>
         
