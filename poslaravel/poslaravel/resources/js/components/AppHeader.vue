@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { usePage } from '@inertiajs/vue3'
 import ButtonIcon from './ui/buttons/ButtonIcon.vue';
 import SimpleButton from './ui/buttons/SimpleButton.vue';
+import OtherChargesModal from './ui/modals/OtherChargesModal.vue';
+
+const showOtherChargesModal = ref(false);
 
 const page = usePage()
 
@@ -36,12 +40,19 @@ function back() {
       <div class="flex items-center gap-4 text-[var(--upme-dark-green)] text-2xl">
         <ButtonIcon icon="fas fa-calculator" title="Calculator" class="hover:bg-gray-100" />
 
-        <ButtonIcon icon="fas fa-sack-dollar" title="Other Charges" class="hover:bg-gray-100" />
+        <ButtonIcon 
+          icon="fas fa-sack-dollar" 
+          title="Other Charges" 
+          class="hover:bg-gray-100"
+          @click="showOtherChargesModal = true" />
 
         <ButtonIcon icon="fas fa-arrow-right-from-bracket" title="Leave" class="hover:bg-gray-100" />
 
       </div>
-
     </div>
   </header>
+
+  <OtherChargesModal 
+    :show="showOtherChargesModal"
+    @close="showOtherChargesModal = false"/>
 </template>
