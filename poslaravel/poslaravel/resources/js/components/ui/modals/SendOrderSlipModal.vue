@@ -15,6 +15,22 @@ const emit = defineEmits(['close'])
 const handleClose = () => {
     emit('close')
 }
+
+// Define table columns
+const columns = [
+    { key: 'number', label: '#', align: 'center' as const },
+    { key: 'particulars', label: 'Particulars', align: 'center' as const },
+    { key: 'qty', label: 'Qty', align: 'center' as const },
+    { key: 'status', label: 'Status', align: 'center' as const }
+]
+
+// Sample data
+const tableData = Array.from({ length: 12 }, (_, i) => ({
+    number: i + 1,
+    particulars: 'Lorem ipsum',
+    qty: 'Lorem ipsum',
+    status: 'Lorem ipsum'
+}))
 </script>
 
 <template>
@@ -25,27 +41,13 @@ const handleClose = () => {
                     icon="fas fa-file-invoice-dollar" @close="handleClose" />
             </template>
             <template #body>
-
                 <div class="flex flex-col gap-2">
                     <div class="rounded-xl border-gray-200 w-[600px]">
-                        <table class="w-full border border-gray-00 rounded-xl text-xs">
-                            <thead class="bg-gray-100 text-[var(--upme-dark-green)]">
-                                <tr>
-                                    <th class="border border-gray-300 rounded-lg px-4 py-2 text-center">#</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-center">Particulars</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-center">Qty</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-center">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="i in 12" :key="i" class="hover:bg-gray-50">
-                                    <td class="border border-gray-300 px-4 py-2 text-(--upme-dark-green)">x</td>
-                                    <td class="border border-gray-300 px-4 py-2 text-(--upme-dark-green)">Lorem ipsum</td>
-                                    <td class="border border-gray-300 px-4 py-2 text-(--upme-dark-green)">Lorem ipsum</td>
-                                    <td class="border border-gray-300 px-4 py-2 text-(--upme-dark-green)">Lorem ipsum</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <DataTable 
+                            :columns="columns"
+                            :data="tableData"
+                            :showActions="false"
+                        />
                     </div>
 
                     <div class="rounded p-4 w-2/3">
@@ -61,10 +63,7 @@ const handleClose = () => {
                             class="bg-(--button-green) text-white px-6 py-2 rounded-lg hover:bg-(--selected-button-green) transition-colors w-full"
                             text="Confirm" />
                     </div>
-
                 </div>
-
-
             </template>
         </ModalTemplate>
     </Teleport>

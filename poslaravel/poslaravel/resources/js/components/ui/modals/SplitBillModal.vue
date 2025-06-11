@@ -3,6 +3,7 @@ import SimpleButton from '../buttons/SimpleButton.vue';
 import CardWithInlineTitle from '../cards/CardWithInlineTitle.vue';
 import ModalHeaderTemplate from './modal-templates/ModalHeaderTemplate.vue';
 import ModalTemplate from './modal-templates/ModalTemplate.vue';
+import DataTable from '../tables/DataTable.vue';
 
 
 const props = defineProps({
@@ -15,6 +16,26 @@ const handleClose = () => {
     emit('close')
 }
 
+// Define table columns
+const columns = [
+    { key: 'menuDesc', label: 'Menu Description', align: 'center' as const },
+    { key: 'qty', label: 'QTY', align: 'center' as const },
+]
+
+// Sample data
+const tableData = Array.from({ length: 4 }, (_, i) => ({
+    menuDesc: 'Lorem ipsum',
+    qty: 'Lorem ipsum'
+}))
+
+const handleEdit = (item: any, index: number) => {
+    console.log('Edit item:', item, 'at index:', index)
+}
+
+const handleDelete = (item: any, index: number) => {
+    console.log('Delete item:', item, 'at index:', index)
+}
+
 </script>
 
 
@@ -22,61 +43,50 @@ const handleClose = () => {
     <Teleport to="body">
         <ModalTemplate :show="show" @closeModal="handleClose">
             <template #header>
-                <ModalHeaderTemplate title="Split Table" icon="fas fa-arrows-split-up-and-left" />
+                <ModalHeaderTemplate title="Split Table" icon="fas fa-arrows-split-up-and-left" @close="handleClose" />
             </template>
 
             <template #body>
                 <!-- Modal Body -->
                 <div class="flex gap-4 px-6 py-4">
+
                     <!-- Source Table Card -->
-
-
                     <CardWithInlineTitle title="Source Table" icon="fas fa-table">
                         <template #body>
-                            <div class="p-4">
-                                <div
-                                    class="text-3xl font-bold text-white text-center rounded border border-(--upme-dark-green) bg-(--card-green) py-2">
+                            <div class="flex flex-col px-4">
+                                <div class="text-3xl font-bold text-white text-center rounded border border-(--upme-dark-green) bg-(--card-green) py-2 -mx-4">
                                     1,872.00
                                 </div>
 
-                                <div class="mt-4 border rounded">
-                                    <div
-                                        class="grid grid-cols-3 bg-gray-100 text-center text-sm font-semibold text-gray-700">
-                                        <div class="p-2 col-span-2">Menu Description</div>
-                                        <div class="p-2">QTY</div>
-                                    </div>
-
-                                    <!-- Insert Source Table here -->
-                                    <div class="grid grid-cols-3 text-center border-t text-sm">
-                                        <div class="p-2 col-span-2">Item Name</div>
-                                        <div class="p-2 flex justify-between items-center">
-                                            1
-                                            <i
-                                                class="fas fa-share cursor-pointer text-gray-500 hover:text-upme-dark-green"></i>
-                                        </div>
-                                    </div>
+                                <div class="p-2 w-full">
+                                        <DataTable 
+                                            :columns="columns"
+                                            :data="tableData"
+                                            :showSplitBill="true"
+                                            @edit="handleEdit"
+                                            @delete="handleDelete"
+                                        />
                                 </div>
                             </div>
                         </template>
                     </CardWithInlineTitle>
 
                     <!-- Split Table Card -->
-
                     <CardWithInlineTitle title="Split Table" icon="fas fa-random">
                         <template #body>
-                            <div class="p-4">
-                                <div class="text-3xl font-bold text-center rounded bg-[#CAE0BC] py-2"
+                            <div class="flex flex-col px-4">
+                                <div class="text-3xl font-bold text-center rounded bg-[#CAE0BC] py-2 -mx-4"
                                     style="color: var(--upme-dark-green); opacity: 0.5;">
                                     0.00
                                 </div>
 
-                                <!-- InsertTable for split table here -->
-                                <div class="mt-4 border rounded">
-                                    <div
-                                        class="grid grid-cols-3 bg-gray-100 text-center text-sm font-semibold text-gray-700">
-                                        <div class="p-2 col-span-2">Menu Description</div>
-                                        <div class="p-2">QTY</div>
-                                    </div>
+                                <div class="p-2 w-full">
+                                        <DataTable 
+                                            :columns="columns"
+                                            :data="tableData"
+                                            @edit="handleEdit"
+                                            @delete="handleDelete"
+                                        />
                                 </div>
                             </div>
                         </template>
