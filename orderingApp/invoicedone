@@ -1,5 +1,0 @@
-<?php
-$invoice_id = $_GET['id'];
-echo "<h2>Invoice #{$invoice_id} has been successfully created!</h2>";
-?>
-<a href="index.php">Back to Home</a>
