@@ -1,0 +1,100 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+html {
+    scroll-behavior: smooth;
+    font-family: 'Roboto', sans-serif;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+}
+
+body {
+    padding-top: 0px;
+}
+
+.img-border {
+    border: 5px solid #0078D0;
+}
+
+/* Typography */
+.text h1 {
+    font-size: 80px;
+}
+
+.text p {
+    font-size: 40px;
+}
+
+/* Card Styles */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    height: 500px;
+    width: 300px;
+    
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-img {
+    border-radius: 20px 20px 0 0;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-title {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.desc {
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+/* Button Styles */
+.btn {
+    background-color: #FFB114;
+    color: #000000;
+    border-radius: 20px;
+    border: none;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+}
+
+.btn:hover {
+    background-color: #F0282D;
+}
+
+/* Section Styles */
+section {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
