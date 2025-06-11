@@ -43,5 +43,4 @@ import ButtonIcon from '../buttons/ButtonIcon.vue';
             <span>Zoom Factor: 100%</span>
         </div>
     </div>
-
 </template>

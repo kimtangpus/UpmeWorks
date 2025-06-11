@@ -30,11 +30,13 @@
             :tax="tax"
             :serviceCharge="serviceCharge"
             :payableAmount="payableAmount"
+            :showPaymentModal="showPaymentModal"
+            :showBillOut="showBillOut"
+            :paidAmount="paidAmount"
+            :changeAmount="changeAmount"
             @update-item-qty="updateItemQty"
             @remove-item="removeItem"
             @void-order="voidOrder"
-            @proceed="handleProceed"
-            @payment-confirmed="handlePaymentConfirmed"
             @confirm="handleConfirm"
           />
         </main>        
@@ -49,8 +51,6 @@
       <CopyrightFooter />
     </div>    
   </div>
-
-  <!-- Bottom Menu - Fixed at bottom -->
 
 </template>
 

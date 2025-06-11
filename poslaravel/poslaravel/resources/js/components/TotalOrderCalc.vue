@@ -11,7 +11,7 @@
                 <!-- Price Banner -->
                 <div class="bg-[#343434] text-[#FFFFFF] text-center py-6 rounded text-5xl font-bold shadow">
                     ₱{{ payableAmount.toFixed(2) }}
-            </div>
+                </div>
 
                 <!-- ordered items -->
                 <div class="overflow-x-auto p-2 space-y-2 flex-1">
@@ -111,11 +111,15 @@
                 <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
                     @click="$emit('void-order')" text="Void" />
 
-                <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('void-order')" text="Send Order Slip" />
+                <SimpleButton 
+                    class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
+                    text="Send Order Slip" 
+                     />
 
                 <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    @click="$emit('proceed')" text="Print Bill" />
+                    text="Print Bill"
+                    @click="showPrintBillModal = true"
+                     />
 
             </div>
         </div>
@@ -123,20 +127,16 @@
 
     <OverridePriceModal :show="showOverridePriceModal" @close="showOverridePriceModal = false" />
 
-    <PaymentModal v-if="showPaymentModal" :grandTotal="payableAmount" @close="showPaymentModal = false"
-        @payment-confirmed="$emit('payment-confirmed', $event)" />
+    <PrintBillModal :show="showPrintBillModal" @close="showPrintBillModal = false" />
 
-    <BillOut v-if="showBillOut" :orderItems="orderItems" :paidAmount="paidAmount" :changeAmount="changeAmount"
-        @close="showBillOut = false" @confirm-payment="$emit('confirm')" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import BillOut from '@/components/BillOut.vue'
-import PaymentModal from '@/components/PaymentModal.vue'
 import OverridePriceModal from './ui/modals/OverridePriceModal.vue'
 import ButtonIcon from './ui/buttons/ButtonIcon.vue'
 import SimpleButton from './ui/buttons/SimpleButton.vue'
+import PrintBillModal from './ui/modals/PrintBillModal.vue'
 
 interface OrderItem {
     id: number
@@ -171,14 +171,28 @@ defineProps({
     payableAmount: {
         type: Number,
         required: true
-    }
+    },
+    showPaymentModal : {
+        type: Boolean, 
+        default: false
+    },
+    showBillOut : {
+        type: Boolean, 
+        default: false
+    },
+    paidAmount : {
+        type: Number, 
+        default: 0
+    },
+    changeAmount : {
+        type: Number, 
+        default: 0
+    },
+
 })
 
-const showPaymentModal = ref(false)
-const showBillOut = ref(false)
 const showOverridePriceModal = ref(false)
-const paidAmount = ref(0)
-const changeAmount = ref(0)
+const showPrintBillModal = ref(false)
 
 defineEmits<{
     (e: 'update-item-qty', item: OrderItem, newQty: number): void

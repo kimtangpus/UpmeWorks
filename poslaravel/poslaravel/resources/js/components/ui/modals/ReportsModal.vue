@@ -31,20 +31,20 @@ const handleClose = () => {
 
 
 const reportTitles: Record<ReportType, string> = {
-    dailySales: 'Daily Sales Report',
-    salesByCategory: 'Sales By Menu Category',
-    refundEntries: 'Refund Entries',
-    voidItems: 'Void Items Report',
-    serviceCharges: 'Service Charges Report',
-    expenses: 'Expenses Report',
-    eSales: 'E-Sales Report',
-    scPWDSummary: 'SC-PWD Summary Report',
-    menuMasterList: 'Menu Masterlist',
-    stockRequisList: 'Stock Requisition List',
+    dailySales       : 'Daily Sales Report',
+    salesByCategory  : 'Sales By Menu Category',
+    refundEntries    : 'Refund Entries',
+    voidItems        : 'Void Items Report',
+    serviceCharges   : 'Service Charges Report',
+    expenses         : 'Expenses Report',
+    eSales           : 'E-Sales Report',
+    scPWDSummary     : 'SC-PWD Summary Report',
+    menuMasterList   : 'Menu Masterlist',
+    stockRequisList  : 'Stock Requisition List',
     stockIssuanceList: 'Stock Issuance List',
-    storAreaInv: 'Storage Area Inventory',  //needs a custom toolbar
-    backendSales: 'Back-End Sales Report',
-    BIRsalesSummary: ' BIR Sales Summary Report',
+    storAreaInv      : 'Storage Area Inventory',  //needs a custom toolbar
+    backendSales     : 'Back-End Sales Report',
+    BIRsalesSummary  : ' BIR Sales Summary Report',
 }
 
 function openModal(reportName: ReportType) {
