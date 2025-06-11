@@ -113,7 +113,8 @@
 
                 <SimpleButton 
                     class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
-                    text="Send Order Slip" 
+                    text="Send Order Slip"
+                    @click="showSendOrderSlipModal = true" 
                      />
 
                 <SimpleButton class="flex-1 bg-[#87b46f] text-white py-2 rounded-lg font-semibold hover:bg-[#7ca460]"
@@ -129,6 +130,8 @@
 
     <PrintBillModal :show="showPrintBillModal" @close="showPrintBillModal = false" />
 
+    <SendOrderSlipModal :show="showSendOrderSlipModal" @close="showSendOrderSlipModal = false" />
+
 </template>
 
 <script setup lang="ts">
@@ -137,6 +140,7 @@ import OverridePriceModal from './ui/modals/OverridePriceModal.vue'
 import ButtonIcon from './ui/buttons/ButtonIcon.vue'
 import SimpleButton from './ui/buttons/SimpleButton.vue'
 import PrintBillModal from './ui/modals/PrintBillModal.vue'
+import SendOrderSlipModal from './ui/modals/SendOrderSlipModal.vue'
 
 interface OrderItem {
     id: number
@@ -193,6 +197,7 @@ defineProps({
 
 const showOverridePriceModal = ref(false)
 const showPrintBillModal = ref(false)
+const showSendOrderSlipModal = ref(false)
 
 defineEmits<{
     (e: 'update-item-qty', item: OrderItem, newQty: number): void
